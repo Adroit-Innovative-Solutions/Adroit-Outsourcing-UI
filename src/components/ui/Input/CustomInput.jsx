@@ -23,6 +23,7 @@ export const CustomInput = forwardRef(
   (
     {
       label,
+      name,
       placeholder,
       helperText,
       error = false,
@@ -50,6 +51,7 @@ export const CustomInput = forwardRef(
           ...e,
           target: {
             ...e.target,
+             name,
             value: "",
           },
         });
@@ -63,6 +65,7 @@ export const CustomInput = forwardRef(
         <StyledTextField
           ref={ref}
           label={label}
+          name={name}
           placeholder={placeholder}
           error={error}
           disabled={disabled}

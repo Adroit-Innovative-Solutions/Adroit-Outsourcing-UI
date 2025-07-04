@@ -1,8 +1,11 @@
 import React from 'react'
+import FormGeneratorSample from '../components/FormContainer/FormGeneratorSample'
 
 const Placements = () => {
   return (
-    <div>Placements</div>
+    <div>
+      <FormGeneratorSample />
+    </div>
   )
 }
 

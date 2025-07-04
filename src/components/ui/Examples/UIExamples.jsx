@@ -19,6 +19,8 @@ import {
 } from "../index";
 import { useUI } from "../Providers/UIProvider";
 import { Add, Edit, Delete, Person, Email, Search } from "@mui/icons-material";
+import ExampleUsage from "../MultiStepForm/CustomStepperForm";
+import Example from "../../FormContainer/StepperFormGenerator";
 
 export const UIExamples = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -312,6 +314,13 @@ export const UIExamples = () => {
           actionText="Add First Item"
           onAction={() => notification.showInfo("Add item clicked!")}
         />
+      </Section>
+      <Section title="Confirmation Dialogs" subtitle="User confirmation">
+        <ExampleUsage />
+      </Section>
+
+      <Section title="Multi-Step Form" subtitle="Custom Stepper Form">
+        <Example />
       </Section>
     </Box>
   );

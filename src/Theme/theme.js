@@ -1,105 +1,105 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme } from "@mui/material/styles";
 
 // Define custom breakpoints for better responsive control
 const customBreakpoints = {
   values: {
-    xs: 0,     // Mobile portrait
-    sm: 600,   // Mobile landscape / Small tablet
-    md: 900,   // Tablet
-    lg: 1200,  // Desktop
-    xl: 1536,  // Large desktop
+    xs: 0, // Mobile portrait
+    sm: 600, // Mobile landscape / Small tablet
+    md: 900, // Tablet
+    lg: 1200, // Desktop
+    xl: 1536, // Large desktop
   },
 };
 
 // Responsive typography that scales with screen size
 const responsiveTypography = {
-  fontFamily: 'Roboto, sans-serif',
+   fontFamily: `'Space Grotesk', 'Roboto', 'Helvetica', 'Arial', sans-serif`,
   h1: {
     fontWeight: 700,
-    fontSize: '2.5rem',
-    '@media (max-width:600px)': {
-      fontSize: '2rem',
+    fontSize: "2.5rem",
+    "@media (max-width:600px)": {
+      fontSize: "2rem",
     },
-    '@media (max-width:480px)': {
-      fontSize: '1.75rem',
+    "@media (max-width:480px)": {
+      fontSize: "1.75rem",
     },
   },
   h2: {
     fontWeight: 600,
-    fontSize: '2rem',
-    '@media (max-width:600px)': {
-      fontSize: '1.75rem',
+    fontSize: "2rem",
+    "@media (max-width:600px)": {
+      fontSize: "1.75rem",
     },
-    '@media (max-width:480px)': {
-      fontSize: '1.5rem',
+    "@media (max-width:480px)": {
+      fontSize: "1.5rem",
     },
   },
   h3: {
     fontWeight: 600,
-    fontSize: '1.75rem',
-    '@media (max-width:600px)': {
-      fontSize: '1.5rem',
+    fontSize: "1.75rem",
+    "@media (max-width:600px)": {
+      fontSize: "1.5rem",
     },
-    '@media (max-width:480px)': {
-      fontSize: '1.25rem',
+    "@media (max-width:480px)": {
+      fontSize: "1.25rem",
     },
   },
   h4: {
     fontWeight: 600,
-    fontSize: '1.5rem',
-    '@media (max-width:600px)': {
-      fontSize: '1.25rem',
+    fontSize: "1.5rem",
+    "@media (max-width:600px)": {
+      fontSize: "1.25rem",
     },
-    '@media (max-width:480px)': {
-      fontSize: '1.125rem',
+    "@media (max-width:480px)": {
+      fontSize: "1.125rem",
     },
   },
   h5: {
     fontWeight: 600,
-    fontSize: '1.25rem',
-    '@media (max-width:600px)': {
-      fontSize: '1.125rem',
+    fontSize: "1.25rem",
+    "@media (max-width:600px)": {
+      fontSize: "1.125rem",
     },
-    '@media (max-width:480px)': {
-      fontSize: '1rem',
+    "@media (max-width:480px)": {
+      fontSize: "1rem",
     },
   },
   h6: {
     fontWeight: 600,
-    fontSize: '1.125rem',
-    '@media (max-width:600px)': {
-      fontSize: '1rem',
+    fontSize: "1.125rem",
+    "@media (max-width:600px)": {
+      fontSize: "1rem",
     },
-    '@media (max-width:480px)': {
-      fontSize: '0.875rem',
+    "@media (max-width:480px)": {
+      fontSize: "0.875rem",
     },
   },
   body1: {
     fontWeight: 400,
-    fontSize: '1rem',
-    '@media (max-width:600px)': {
-      fontSize: '0.9rem',
+    fontSize: "1rem",
+    "@media (max-width:600px)": {
+      fontSize: "0.9rem",
     },
   },
   body2: {
     fontWeight: 400,
-    fontSize: '0.875rem',
-    '@media (max-width:600px)': {
-      fontSize: '0.8rem',
+    fontSize: "0.875rem",
+    "@media (max-width:600px)": {
+      fontSize: "0.8rem",
     },
   },
   button: {
-    textTransform: 'none',
+    textTransform: "none",
     fontWeight: 600,
-    fontSize: '0.875rem',
-    '@media (max-width:600px)': {
-      fontSize: '0.8rem',
+    fontSize: "0.875rem",
+    "@media (max-width:600px)": {
+      fontSize: "0.8rem",
     },
   },
   caption: {
-    fontSize: '0.75rem',
-    '@media (max-width:600px)': {
-      fontSize: '0.7rem',
+    fontSize: "0.75rem",
+    "@media (max-width:600px)": {
+      fontSize: "0.7rem",
     },
   },
 };
@@ -111,11 +111,11 @@ const getCommonComponents = (theme) => ({
       root: {
         paddingLeft: theme.spacing(2),
         paddingRight: theme.spacing(2),
-        [theme.breakpoints.up('sm')]: {
+        [theme.breakpoints.up("sm")]: {
           paddingLeft: theme.spacing(3),
           paddingRight: theme.spacing(3),
         },
-        [theme.breakpoints.up('md')]: {
+        [theme.breakpoints.up("md")]: {
           paddingLeft: theme.spacing(4),
           paddingRight: theme.spacing(4),
         },
@@ -126,9 +126,9 @@ const getCommonComponents = (theme) => ({
     styleOverrides: {
       root: {
         elevation: 4,
-        height: '64px',
-        [theme.breakpoints.down('sm')]: {
-          height: '56px',
+        height: "64px",
+        [theme.breakpoints.down("sm")]: {
+          height: "56px",
         },
       },
     },
@@ -136,10 +136,10 @@ const getCommonComponents = (theme) => ({
   MuiToolbar: {
     styleOverrides: {
       root: {
-        minHeight: '64px !important',
+        minHeight: "64px !important",
         padding: `0 ${theme.spacing(2)}`,
-        [theme.breakpoints.down('sm')]: {
-          minHeight: '56px !important',
+        [theme.breakpoints.down("sm")]: {
+          minHeight: "56px !important",
           padding: `0 ${theme.spacing(1)}`,
         },
       },
@@ -148,14 +148,14 @@ const getCommonComponents = (theme) => ({
   MuiDrawer: {
     styleOverrides: {
       paper: {
-        borderRight: 'none',
-        width: '280px',
-        [theme.breakpoints.down('md')]: {
-          width: '260px',
+        borderRight: "none",
+        width: "280px",
+        [theme.breakpoints.down("md")]: {
+          width: "260px",
         },
-        [theme.breakpoints.down('sm')]: {
-          width: '100%',
-          maxWidth: '300px',
+        [theme.breakpoints.down("sm")]: {
+          width: "100%",
+          maxWidth: "300px",
         },
       },
     },
@@ -164,28 +164,28 @@ const getCommonComponents = (theme) => ({
     styleOverrides: {
       root: {
         borderRadius: 8,
-        textTransform: 'none',
+        textTransform: "none",
         fontWeight: 600,
-        padding: '8px 16px',
-        minHeight: '40px',
-        [theme.breakpoints.down('sm')]: {
-          padding: '6px 12px',
-          minHeight: '36px',
-          fontSize: '0.8rem',
+        padding: "8px 16px",
+        minHeight: "40px",
+        [theme.breakpoints.down("sm")]: {
+          padding: "6px 12px",
+          minHeight: "36px",
+          fontSize: "0.8rem",
         },
       },
       small: {
-        padding: '4px 8px',
-        minHeight: '32px',
-        fontSize: '0.75rem',
+        padding: "4px 8px",
+        minHeight: "32px",
+        fontSize: "0.75rem",
       },
       large: {
-        padding: '12px 24px',
-        minHeight: '48px',
-        fontSize: '1rem',
-        [theme.breakpoints.down('sm')]: {
-          padding: '10px 20px',
-          minHeight: '44px',
+        padding: "12px 24px",
+        minHeight: "48px",
+        fontSize: "1rem",
+        [theme.breakpoints.down("sm")]: {
+          padding: "10px 20px",
+          minHeight: "44px",
         },
       },
     },
@@ -194,7 +194,7 @@ const getCommonComponents = (theme) => ({
     styleOverrides: {
       root: {
         padding: theme.spacing(1),
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down("sm")]: {
           padding: theme.spacing(0.75),
         },
       },
@@ -204,8 +204,8 @@ const getCommonComponents = (theme) => ({
     styleOverrides: {
       root: {
         borderRadius: 12,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-        [theme.breakpoints.down('sm')]: {
+        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+        [theme.breakpoints.down("sm")]: {
           borderRadius: 8,
           margin: theme.spacing(1),
         },
@@ -216,18 +216,18 @@ const getCommonComponents = (theme) => ({
     styleOverrides: {
       root: {
         padding: theme.spacing(3),
-        [theme.breakpoints.down('md')]: {
+        [theme.breakpoints.down("md")]: {
           padding: theme.spacing(2),
         },
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down("sm")]: {
           padding: theme.spacing(1.5),
         },
-        '&:last-child': {
+        "&:last-child": {
           paddingBottom: theme.spacing(3),
-          [theme.breakpoints.down('md')]: {
+          [theme.breakpoints.down("md")]: {
             paddingBottom: theme.spacing(2),
           },
-          [theme.breakpoints.down('sm')]: {
+          [theme.breakpoints.down("sm")]: {
             paddingBottom: theme.spacing(1.5),
           },
         },
@@ -239,11 +239,11 @@ const getCommonComponents = (theme) => ({
       paper: {
         borderRadius: 12,
         margin: theme.spacing(2),
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down("sm")]: {
           margin: theme.spacing(1),
           borderRadius: 8,
-          width: '100%',
-          maxWidth: 'calc(100% - 16px)',
+          width: "100%",
+          maxWidth: "calc(100% - 16px)",
         },
       },
     },
@@ -252,7 +252,7 @@ const getCommonComponents = (theme) => ({
     styleOverrides: {
       root: {
         padding: theme.spacing(3),
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down("sm")]: {
           padding: theme.spacing(2),
         },
       },
@@ -262,7 +262,7 @@ const getCommonComponents = (theme) => ({
     styleOverrides: {
       root: {
         padding: theme.spacing(3),
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down("sm")]: {
           padding: theme.spacing(2),
         },
       },
@@ -272,11 +272,11 @@ const getCommonComponents = (theme) => ({
     styleOverrides: {
       root: {
         padding: theme.spacing(2, 3, 3),
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down("sm")]: {
           padding: theme.spacing(1, 2, 2),
-          flexDirection: 'column',
+          flexDirection: "column",
           gap: theme.spacing(1),
-          '& > :not(:first-of-type)': {
+          "& > :not(:first-of-type)": {
             marginLeft: 0,
           },
         },
@@ -286,10 +286,10 @@ const getCommonComponents = (theme) => ({
   MuiTextField: {
     styleOverrides: {
       root: {
-        '& .MuiOutlinedInput-root': {
+        "& .MuiOutlinedInput-root": {
           borderRadius: 8,
-          [theme.breakpoints.down('sm')]: {
-            fontSize: '0.9rem',
+          [theme.breakpoints.down("sm")]: {
+            fontSize: "0.9rem",
           },
         },
       },
@@ -298,8 +298,8 @@ const getCommonComponents = (theme) => ({
   MuiInputLabel: {
     styleOverrides: {
       root: {
-        [theme.breakpoints.down('sm')]: {
-          fontSize: '0.9rem',
+        [theme.breakpoints.down("sm")]: {
+          fontSize: "0.9rem",
         },
       },
     },
@@ -308,9 +308,9 @@ const getCommonComponents = (theme) => ({
     styleOverrides: {
       root: {
         borderRadius: 16,
-        [theme.breakpoints.down('sm')]: {
-          fontSize: '0.75rem',
-          height: '28px',
+        [theme.breakpoints.down("sm")]: {
+          fontSize: "0.75rem",
+          height: "28px",
         },
       },
     },
@@ -318,13 +318,13 @@ const getCommonComponents = (theme) => ({
   MuiTabs: {
     styleOverrides: {
       root: {
-        [theme.breakpoints.down('sm')]: {
-          minHeight: '40px',
+        [theme.breakpoints.down("sm")]: {
+          minHeight: "40px",
         },
       },
       scrollButtons: {
-        [theme.breakpoints.down('sm')]: {
-          width: '32px',
+        [theme.breakpoints.down("sm")]: {
+          width: "32px",
         },
       },
     },
@@ -332,14 +332,14 @@ const getCommonComponents = (theme) => ({
   MuiTab: {
     styleOverrides: {
       root: {
-        textTransform: 'none',
+        textTransform: "none",
         fontWeight: 600,
-        minHeight: '48px',
-        [theme.breakpoints.down('sm')]: {
-          minHeight: '40px',
-          fontSize: '0.8rem',
-          padding: '6px 12px',
-          minWidth: '64px',
+        minHeight: "48px",
+        [theme.breakpoints.down("sm")]: {
+          minHeight: "40px",
+          fontSize: "0.8rem",
+          padding: "6px 12px",
+          minWidth: "64px",
         },
       },
     },
@@ -347,8 +347,8 @@ const getCommonComponents = (theme) => ({
   MuiTableContainer: {
     styleOverrides: {
       root: {
-        [theme.breakpoints.down('md')]: {
-          overflowX: 'auto',
+        [theme.breakpoints.down("md")]: {
+          overflowX: "auto",
         },
       },
     },
@@ -356,15 +356,15 @@ const getCommonComponents = (theme) => ({
   MuiTableCell: {
     styleOverrides: {
       root: {
-        [theme.breakpoints.down('sm')]: {
-          padding: '8px 4px',
-          fontSize: '0.8rem',
+        [theme.breakpoints.down("sm")]: {
+          padding: "8px 4px",
+          fontSize: "0.8rem",
         },
       },
       head: {
         fontWeight: 600,
-        [theme.breakpoints.down('sm')]: {
-          fontSize: '0.75rem',
+        [theme.breakpoints.down("sm")]: {
+          fontSize: "0.75rem",
         },
       },
     },
@@ -374,7 +374,7 @@ const getCommonComponents = (theme) => ({
       root: {
         paddingTop: theme.spacing(1),
         paddingBottom: theme.spacing(1),
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down("sm")]: {
           paddingTop: theme.spacing(0.75),
           paddingBottom: theme.spacing(0.75),
         },
@@ -384,13 +384,13 @@ const getCommonComponents = (theme) => ({
   MuiListItemText: {
     styleOverrides: {
       primary: {
-        [theme.breakpoints.down('sm')]: {
-          fontSize: '0.9rem',
+        [theme.breakpoints.down("sm")]: {
+          fontSize: "0.9rem",
         },
       },
       secondary: {
-        [theme.breakpoints.down('sm')]: {
-          fontSize: '0.8rem',
+        [theme.breakpoints.down("sm")]: {
+          fontSize: "0.8rem",
         },
       },
     },
@@ -398,13 +398,13 @@ const getCommonComponents = (theme) => ({
   MuiAccordion: {
     styleOverrides: {
       root: {
-        borderRadius: '8px !important',
+        borderRadius: "8px !important",
         marginBottom: theme.spacing(1),
-        '&:before': {
-          display: 'none',
+        "&:before": {
+          display: "none",
         },
-        [theme.breakpoints.down('sm')]: {
-          borderRadius: '6px !important',
+        [theme.breakpoints.down("sm")]: {
+          borderRadius: "6px !important",
         },
       },
     },
@@ -413,13 +413,13 @@ const getCommonComponents = (theme) => ({
     styleOverrides: {
       root: {
         padding: theme.spacing(2),
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down("sm")]: {
           padding: theme.spacing(1.5),
         },
       },
       content: {
-        [theme.breakpoints.down('sm')]: {
-          fontSize: '0.9rem',
+        [theme.breakpoints.down("sm")]: {
+          fontSize: "0.9rem",
         },
       },
     },
@@ -428,7 +428,7 @@ const getCommonComponents = (theme) => ({
     styleOverrides: {
       root: {
         padding: theme.spacing(2),
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down("sm")]: {
           padding: theme.spacing(1.5),
         },
       },
@@ -437,9 +437,9 @@ const getCommonComponents = (theme) => ({
   MuiBottomNavigation: {
     styleOverrides: {
       root: {
-        height: '64px',
-        [theme.breakpoints.down('sm')]: {
-          height: '56px',
+        height: "64px",
+        [theme.breakpoints.down("sm")]: {
+          height: "56px",
         },
       },
     },
@@ -447,10 +447,10 @@ const getCommonComponents = (theme) => ({
   MuiBottomNavigationAction: {
     styleOverrides: {
       root: {
-        minWidth: '64px',
-        [theme.breakpoints.down('sm')]: {
-          minWidth: '48px',
-          fontSize: '0.75rem',
+        minWidth: "64px",
+        [theme.breakpoints.down("sm")]: {
+          minWidth: "48px",
+          fontSize: "0.75rem",
         },
       },
     },
@@ -458,10 +458,10 @@ const getCommonComponents = (theme) => ({
   MuiSpeedDial: {
     styleOverrides: {
       root: {
-        position: 'fixed',
+        position: "fixed",
         bottom: theme.spacing(3),
         right: theme.spacing(3),
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down("sm")]: {
           bottom: theme.spacing(2),
           right: theme.spacing(2),
         },
@@ -471,7 +471,7 @@ const getCommonComponents = (theme) => ({
   MuiSnackbar: {
     styleOverrides: {
       root: {
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down("sm")]: {
           left: theme.spacing(1),
           right: theme.spacing(1),
           bottom: theme.spacing(1),
@@ -483,8 +483,8 @@ const getCommonComponents = (theme) => ({
     styleOverrides: {
       root: {
         borderRadius: 8,
-        [theme.breakpoints.down('sm')]: {
-          fontSize: '0.85rem',
+        [theme.breakpoints.down("sm")]: {
+          fontSize: "0.85rem",
           borderRadius: 6,
         },
       },
@@ -494,7 +494,7 @@ const getCommonComponents = (theme) => ({
     styleOverrides: {
       root: {
         padding: theme.spacing(3, 0),
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down("sm")]: {
           padding: theme.spacing(2, 0),
         },
       },
@@ -503,8 +503,8 @@ const getCommonComponents = (theme) => ({
   MuiStepLabel: {
     styleOverrides: {
       label: {
-        [theme.breakpoints.down('sm')]: {
-          fontSize: '0.8rem',
+        [theme.breakpoints.down("sm")]: {
+          fontSize: "0.8rem",
         },
       },
     },
@@ -512,11 +512,11 @@ const getCommonComponents = (theme) => ({
   MuiPagination: {
     styleOverrides: {
       root: {
-        '& .MuiPaginationItem-root': {
-          [theme.breakpoints.down('sm')]: {
-            fontSize: '0.8rem',
-            minWidth: '28px',
-            height: '28px',
+        "& .MuiPaginationItem-root": {
+          [theme.breakpoints.down("sm")]: {
+            fontSize: "0.8rem",
+            minWidth: "28px",
+            height: "28px",
           },
         },
       },
@@ -525,18 +525,18 @@ const getCommonComponents = (theme) => ({
   MuiAvatar: {
     styleOverrides: {
       root: {
-        [theme.breakpoints.down('sm')]: {
-          width: '32px',
-          height: '32px',
-          fontSize: '0.9rem',
+        [theme.breakpoints.down("sm")]: {
+          width: "32px",
+          height: "32px",
+          fontSize: "0.9rem",
         },
       },
       large: {
-        width: '56px',
-        height: '56px',
-        [theme.breakpoints.down('sm')]: {
-          width: '48px',
-          height: '48px',
+        width: "56px",
+        height: "56px",
+        [theme.breakpoints.down("sm")]: {
+          width: "48px",
+          height: "48px",
         },
       },
     },
@@ -544,10 +544,10 @@ const getCommonComponents = (theme) => ({
   MuiBadge: {
     styleOverrides: {
       badge: {
-        [theme.breakpoints.down('sm')]: {
-          fontSize: '0.65rem',
-          minWidth: '16px',
-          height: '16px',
+        [theme.breakpoints.down("sm")]: {
+          fontSize: "0.65rem",
+          minWidth: "16px",
+          height: "16px",
         },
       },
     },
@@ -558,26 +558,26 @@ const getCommonComponents = (theme) => ({
 export const darkTheme = createTheme({
   breakpoints: customBreakpoints,
   palette: {
-    mode: 'dark',
+    mode: "dark",
     primary: {
-      main: '#F26322',
-      contrastText: '#FFFFFF',
+      main: "#F26322",
+      contrastText: "#FFFFFF",
     },
     secondary: {
-      main: '#1B2320',
+      main: "#1B2320",
     },
     background: {
-      default: '#121212',
-      paper: '#1e1e1e',
+      default: "#121212",
+      paper: "#1e1e1e",
     },
     text: {
-      primary: '#FFFFFF',
-      secondary: '#B3B3B3',
+      primary: "#FFFFFF",
+      secondary: "#B3B3B3",
     },
-    divider: '#333333',
+    divider: "#333333",
     action: {
-      selected: 'rgba(242, 99, 34, 0.12)',
-      hover: 'rgba(242, 99, 34, 0.08)',
+      selected: "rgba(242, 99, 34, 0.12)",
+      hover: "rgba(242, 99, 34, 0.08)",
     },
   },
   typography: responsiveTypography,
@@ -585,12 +585,12 @@ export const darkTheme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: '#1e1e1e',
-          color: '#FFFFFF',
+          backgroundColor: "#1e1e1e",
+          color: "#FFFFFF",
           elevation: 4,
-          height: '64px',
-          '@media (max-width:600px)': {
-            height: '56px',
+          height: "64px",
+          "@media (max-width:600px)": {
+            height: "56px",
           },
         },
       },
@@ -608,26 +608,29 @@ darkTheme.components = {
 export const lightTheme = createTheme({
   breakpoints: customBreakpoints,
   palette: {
-    mode: 'light',
+    mode: "light",
     primary: {
-      main: '#F26322',
-      contrastText: '#FFFFFF',
+      main: "#F26322",
+      light: "#FF8C5A",
+      dark: "#C3410A",
+      contrastText: "#FFFFFF",
+     
     },
     secondary: {
-      main: '#F5F5F5',
+      main: "#F5F5F5",
     },
     background: {
-      default: '#FFFFFF',
-      paper: '#F8F9FA',
+      default: "#FFFFFF",
+      paper: "#F8F9FA",
     },
     text: {
-      primary: '#212121',
-      secondary: '#666666',
+      primary: "#212121",
+      secondary: "#666666",
     },
-    divider: '#E0E0E0',
+    divider: "#E0E0E0",
     action: {
-      selected: 'rgba(242, 99, 34, 0.08)',
-      hover: 'rgba(242, 99, 34, 0.04)',
+      selected: "rgba(242, 99, 34, 0.08)",
+      hover: "rgba(242, 99, 34, 0.04)",
     },
   },
   typography: responsiveTypography,
@@ -635,13 +638,13 @@ export const lightTheme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: '#FFFFFF',
-          color: '#212121',
-          boxShadow: '0px 2px 4px -1px rgba(0,0,0,0.2)',
+          backgroundColor: "#FFFFFF",
+          color: "#212121",
+          boxShadow: "0px 2px 4px -1px rgba(0,0,0,0.2)",
           elevation: 4,
-          height: '64px',
-          '@media (max-width:600px)': {
-            height: '56px',
+          height: "64px",
+          "@media (max-width:600px)": {
+            height: "56px",
           },
         },
       },
@@ -658,19 +661,19 @@ lightTheme.components = {
 // Theme utility functions with error handling
 export const getStoredTheme = () => {
   try {
-    const storedTheme = localStorage.getItem('theme');
-    return storedTheme === 'dark';
+    const storedTheme = localStorage.getItem("theme");
+    return storedTheme === "dark";
   } catch (error) {
-    console.warn('Unable to access localStorage:', error);
+    console.warn("Unable to access localStorage:", error);
     return false; // Default to light theme
   }
 };
 
 export const setStoredTheme = (isDark) => {
   try {
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    localStorage.setItem("theme", isDark ? "dark" : "light");
   } catch (error) {
-    console.warn('Unable to save theme to localStorage:', error);
+    console.warn("Unable to save theme to localStorage:", error);
   }
 };
 
@@ -686,19 +689,19 @@ export const getResponsiveSpacing = (theme) => ({
 // Helper function for responsive font sizes
 export const getResponsiveFontSize = (base, sm = null, xs = null) => ({
   fontSize: base,
-  '@media (max-width:600px)': {
+  "@media (max-width:600px)": {
     fontSize: sm || `calc(${base} * 0.9)`,
   },
-  '@media (max-width:480px)': {
+  "@media (max-width:480px)": {
     fontSize: xs || `calc(${base} * 0.8)`,
   },
 });
 
 // Export responsive breakpoint helpers
 export const useResponsiveBreakpoints = () => ({
-  isMobile: '(max-width:600px)',
-  isTablet: '(min-width:601px) and (max-width:900px)',
-  isDesktop: '(min-width:901px)',
-  isSmallScreen: '(max-width:900px)',
-  isLargeScreen: '(min-width:1200px)',
+  isMobile: "(max-width:600px)",
+  isTablet: "(min-width:601px) and (max-width:900px)",
+  isDesktop: "(min-width:901px)",
+  isSmallScreen: "(max-width:900px)",
+  isLargeScreen: "(min-width:1200px)",
 });

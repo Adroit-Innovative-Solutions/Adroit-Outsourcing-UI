@@ -4,13 +4,27 @@ import { useTheme } from "@mui/material/styles";
 
 const CurrentTime = () => {
   const theme = useTheme();
-  const [time, setTime] = useState(new Date().toLocaleString());
+  const [time, setTime] = useState("");
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTime(new Date().toLocaleString());
-    }, 1000);
+    const updateTime = () => {
+      const now = new Date();
+      const options = {
+        weekday: "long", // <-- Add day
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+      };
+      const formattedTime = now.toLocaleString("en-IN", options);
+      setTime(formattedTime);
+    };
 
+    updateTime(); // Initial call
+    const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
   }, []);
 
