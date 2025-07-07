@@ -6,6 +6,8 @@ const CurrentTime = () => {
   const theme = useTheme();
   const [time, setTime] = useState("");
 
+
+  //current time
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
