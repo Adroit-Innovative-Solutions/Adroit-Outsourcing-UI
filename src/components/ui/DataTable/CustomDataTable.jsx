@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -22,7 +22,6 @@ import {
   InputLabel,
   Chip,
   useTheme,
-  useMediaQuery,
   Pagination,
   Stack,
   CircularProgress,
@@ -30,7 +29,6 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
-  MoreVert,
   Search,
   Clear,
   FilterList,
@@ -39,7 +37,7 @@ import {
   KeyboardArrowUp,
 } from "@mui/icons-material";
 import { CustomButton } from "../Button/CustomButton";
-import  CustomLinearLoader  from "../Loading/CustomLinearLoader";
+import CustomLinearLoader from "../Loading/CustomLinearLoader";
 
 const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
   borderRadius: 12,
@@ -49,155 +47,77 @@ const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
       : "0 4px 20px rgba(0, 0, 0, 0.1)",
   position: "relative",
   overflow: "hidden",
-  [theme.breakpoints.down("md")]: {
-    borderRadius: 8,
-    margin: theme.spacing(1),
+  width: "100%",
+  height: "100%",
+}));
+
+const ScrollSyncWrapper = styled(Box)(({ theme }) => ({
+  overflowX: "auto",
+  overflowY: "auto",
+  width: "100%",
+  flex: 1,
+  minHeight: 0,
+  "&::-webkit-scrollbar": {
+    height: "8px",
+    width: "8px",
   },
+  "&::-webkit-scrollbar-track": {
+    background:
+      theme.palette.mode === "dark"
+        ? theme.palette.grey[900]
+        : theme.palette.grey[100],
+    borderRadius: "4px",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    background:
+      theme.palette.mode === "dark"
+        ? theme.palette.grey[700]
+        : theme.palette.grey[400],
+    borderRadius: "4px",
+    "&:hover": {
+      background:
+        theme.palette.mode === "dark"
+          ? theme.palette.grey[600]
+          : theme.palette.grey[500],
+    },
+  },
+  scrollbarWidth: "thin",
+  scrollbarColor: `${
+    theme.palette.mode === "dark"
+      ? theme.palette.grey[700]
+      : theme.palette.grey[400]
+  } ${
+    theme.palette.mode === "dark"
+      ? theme.palette.grey[900]
+      : theme.palette.grey[100]
+  }`,
 }));
 
 const StyledTableHead = styled(TableHead)(({ theme }) => ({
   position: "sticky",
   top: 0,
-  zIndex: 2,
+  zIndex: 3,
   backgroundColor:
     theme.palette.mode === "dark"
       ? theme.palette.background.default
-      : theme.palette.grey[100],
-}));
-
-const StyledTableBody = styled(TableBody)(({ theme }) => ({
-  [theme.breakpoints.up("md")]: {
-    overflow: "auto",
-  },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  [theme.breakpoints.up("md")]: {
-    display: "table-row",
-  },
-  [theme.breakpoints.down("md")]: {
-    display: "none", // Hide table rows on mobile, we'll use cards instead
-  },
+      : theme.palette.grey[200],
 }));
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   fontWeight: 600,
   borderBottom: `1px solid ${theme.palette.divider}`,
-}));
-
-const MobileTableCell = styled(TableCell)(({ theme }) => ({
-  // This component will be unused in favor of cards on mobile
-}));
-
-// Mobile Card Components
-const MobileCardContainer = styled(Box)(({ theme }) => ({
-  [theme.breakpoints.down("md")]: {
-    padding: theme.spacing(1),
-    display: "flex",
-    flexDirection: "column",
-    gap: theme.spacing(2),
-  },
-  [theme.breakpoints.up("md")]: {
-    display: "none",
-  },
-}));
-
-const MobileCard = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(2.5),
-  borderRadius: 16,
-  background: theme.palette.mode === "dark" 
-    ? `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)`
-    : `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.grey[50]} 100%)`,
-  boxShadow: theme.palette.mode === "dark"
-    ? "0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2)"
-    : "0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)",
-  border: `1px solid ${theme.palette.divider}`,
-  position: "relative",
-  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-  cursor: "pointer",
+  padding: theme.spacing(1.5),
+  whiteSpace: "nowrap",
   overflow: "hidden",
-  "&:hover": {
-    transform: "translateY(-4px)",
-    boxShadow: theme.palette.mode === "dark"
-      ? "0 16px 48px rgba(0, 0, 0, 0.5), 0 8px 16px rgba(0, 0, 0, 0.3)"
-      : "0 16px 48px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.08)",
-  },
-  "&::before": {
-    content: '""',
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 4,
-    background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-  },
+  textOverflow: "ellipsis",
 }));
 
-const CardHeader = styled(Box)(({ theme }) => ({
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "flex-start",
-  marginBottom: theme.spacing(2),
-  paddingBottom: theme.spacing(1.5),
+const StyledTableBodyCell = styled(TableCell)(({ theme }) => ({
   borderBottom: `1px solid ${theme.palette.divider}`,
-}));
-
-const CardBody = styled(Box)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  gap: theme.spacing(1.5),
-}));
-
-const CardField = styled(Box)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  padding: theme.spacing(1),
-  borderRadius: 8,
-  backgroundColor: theme.palette.mode === "dark" 
-    ? theme.palette.grey[800] 
-    : theme.palette.grey[50],
-  transition: "background-color 0.2s ease",
-  "&:hover": {
-    backgroundColor: theme.palette.mode === "dark" 
-      ? theme.palette.grey[700] 
-      : theme.palette.grey[100],
-  },
-}));
-
-const CardFieldLabel = styled(Typography)(({ theme }) => ({
-  fontWeight: 600,
-  fontSize: "0.875rem",
-  color: theme.palette.text.secondary,
-  textTransform: "uppercase",
-  letterSpacing: "0.5px",
-  minWidth: "35%",
-}));
-
-const CardFieldValue = styled(Typography)(({ theme }) => ({
-  fontWeight: 500,
-  fontSize: "0.95rem",
-  color: theme.palette.text.primary,
-  textAlign: "right",
-  flex: 1,
-  wordBreak: "break-word",
-}));
-
-const CardActions = styled(Box)(({ theme }) => ({
-  display: "flex",
-  justifyContent: "flex-end",
-  alignItems: "center",
-  marginTop: theme.spacing(2),
-  paddingTop: theme.spacing(1.5),
-  borderTop: `1px solid ${theme.palette.divider}`,
-  gap: theme.spacing(1),
-}));
-
-const SelectionIndicator = styled(Box)(({ theme }) => ({
-  position: "absolute",
-  top: theme.spacing(1),
-  left: theme.spacing(1),
-  zIndex: 2,
+  padding: theme.spacing(1.5),
+  whiteSpace: "nowrap",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
 }));
 
 const FilterContainer = styled(Box)(({ theme }) => ({
@@ -207,9 +127,6 @@ const FilterContainer = styled(Box)(({ theme }) => ({
     theme.palette.mode === "dark"
       ? theme.palette.grey[900]
       : theme.palette.grey[50],
-  [theme.breakpoints.down("md")]: {
-    padding: theme.spacing(1.5),
-  },
 }));
 
 const FilterHeader = styled(Box)(({ theme }) => ({
@@ -217,11 +134,6 @@ const FilterHeader = styled(Box)(({ theme }) => ({
   alignItems: "center",
   justifyContent: "space-between",
   marginBottom: theme.spacing(2),
-  [theme.breakpoints.down("md")]: {
-    flexDirection: "column",
-    gap: theme.spacing(2),
-    alignItems: "stretch",
-  },
 }));
 
 const FilterGrid = styled(Box)(({ theme }) => ({
@@ -229,10 +141,6 @@ const FilterGrid = styled(Box)(({ theme }) => ({
   gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
   gap: theme.spacing(2),
   marginTop: theme.spacing(2),
-  [theme.breakpoints.down("md")]: {
-    gridTemplateColumns: "1fr",
-    gap: theme.spacing(1.5),
-  },
 }));
 
 const ActiveFiltersContainer = styled(Box)(({ theme }) => ({
@@ -248,20 +156,12 @@ const PaginationContainer = styled(Box)(({ theme }) => ({
   alignItems: "center",
   padding: theme.spacing(2),
   borderTop: `1px solid ${theme.palette.divider}`,
-  [theme.breakpoints.down("md")]: {
-    flexDirection: "column",
-    gap: theme.spacing(2),
-    alignItems: "center",
-  },
 }));
 
 const RowsPerPageContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   gap: theme.spacing(1),
-  [theme.breakpoints.down("md")]: {
-    order: 2,
-  },
 }));
 
 const LoadingOverlay = styled(Backdrop)(({ theme }) => ({
@@ -271,41 +171,174 @@ const LoadingOverlay = styled(Backdrop)(({ theme }) => ({
   color: theme.palette.primary.main,
 }));
 
+const ScrollableTableContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  width: "100%",
+  height: "100%",
+  position: "relative",
+  overflow: "hidden",
+}));
+
+const ScrollableTableHeader = styled(Box)(({ theme }) => ({
+  flexShrink: 0,
+  overflowX: "hidden",
+  overflowY: "hidden",
+  width: "100%",
+  position: "relative",
+  zIndex: 3,
+  backgroundColor: theme.palette.background.paper,
+  borderBottom: `1px solid ${theme.palette.divider}`,
+}));
+
+const ScrollableTableBody = styled(Box)(({ theme }) => ({
+  flex: 1,
+  overflowX: "auto",
+  overflowY: "auto",
+  width: "100%",
+  minHeight: 0, // Important for flex child to be scrollable
+  "&::-webkit-scrollbar": {
+    height: "8px",
+    width: "8px",
+  },
+  "&::-webkit-scrollbar-track": {
+    background:
+      theme.palette.mode === "dark"
+        ? theme.palette.grey[900]
+        : theme.palette.grey[100],
+    borderRadius: "4px",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    background:
+      theme.palette.mode === "dark"
+        ? theme.palette.grey[700]
+        : theme.palette.grey[400],
+    borderRadius: "4px",
+    "&:hover": {
+      background:
+        theme.palette.mode === "dark"
+          ? theme.palette.grey[600]
+          : theme.palette.grey[500],
+    },
+  },
+  "&::-webkit-scrollbar-corner": {
+    background:
+      theme.palette.mode === "dark"
+        ? theme.palette.grey[900]
+        : theme.palette.grey[100],
+  },
+  // For Firefox
+  scrollbarWidth: "thin",
+  scrollbarColor: `${
+    theme.palette.mode === "dark"
+      ? theme.palette.grey[700]
+      : theme.palette.grey[400]
+  } 
+    ${
+      theme.palette.mode === "dark"
+        ? theme.palette.grey[900]
+        : theme.palette.grey[100]
+    }`,
+}));
+
 export const CustomDataTable = ({
   columns = [],
   data = [],
   selectable = false,
   pagination = true,
-  rowsPerPageOptions = [5, 10, 25, 50],
+  rowsPerPageOptions = [5, 10, 15, 25, 30],
   onRowClick,
   actions,
   filters = true,
-  loading = false, // New loading prop
-  loadingColor = "primary", // New loading color prop
+  loading = false,
+  loadingColor = "primary",
+  tableHeight = "100%",
+  onSelectionChange,
+  serverSide = false,
+  totalCount = 0,
+  onPageChange,
+  onRowsPerPageChange,
   ...props
 }) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
   const [selected, setSelected] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [columnFilters, setColumnFilters] = useState({});
   const [showFilters, setShowFilters] = useState(false);
+  const headerRef = useRef(null);
+  const bodyRef = useRef(null);
+
+  // Sync horizontal scrolling between header and body
+  useEffect(() => {
+    const header = headerRef.current;
+    const body = bodyRef.current;
+
+    if (!header || !body) return;
+
+    const handleBodyScroll = () => {
+      if (header) {
+        header.scrollLeft = body.scrollLeft;
+      }
+    };
+
+    body.addEventListener("scroll", handleBodyScroll);
+
+    return () => {
+      body.removeEventListener("scroll", handleBodyScroll);
+    };
+  }, []);
+
+  // Call onSelectionChange when selection changes
+  useEffect(() => {
+    if (onSelectionChange) {
+      const selectedRows = selected.map((index) => data[index]).filter(Boolean);
+      onSelectionChange(selectedRows, selected);
+    }
+  }, [selected, data, onSelectionChange]);
+
+  // Calculate column widths
+  const getColumnWidth = (column, index) => {
+    if (column.width) return column.width;
+
+    // Default widths based on column type
+    if (selectable && index === 0) return "60px"; // Checkbox column
+    if (actions && index === columns.length + (selectable ? 1 : 0))
+      return "120px"; // Actions column
+
+    // Auto-calculate width based on content
+    const totalAvailableWidth = 100;
+    const reservedWidth = (selectable ? 60 : 0) + (actions ? 120 : 0);
+    const remainingWidth = totalAvailableWidth - reservedWidth;
+    const columnWidth = remainingWidth / columns.length;
+
+    return `${Math.max(columnWidth, 10)}%`;
+  };
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    if (serverSide) {
+      onPageChange(newPage);
+    } else {
+      setPage(newPage);
+    }
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(1);
+    const newRowsPerPage = parseInt(event.target.value, 10);
+    if (serverSide) {
+      onRowsPerPageChange(newRowsPerPage);
+    } else {
+      setRowsPerPage(newRowsPerPage);
+      setPage(1);
+    }
   };
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = data.map((row, index) => index);
+      const newSelected = filteredData.map((row, index) =>
+        pagination ? (page - 1) * rowsPerPage + index : index
+      );
       setSelected(newSelected);
       return;
     }
@@ -313,6 +346,8 @@ export const CustomDataTable = ({
   };
 
   const handleClick = (event, index) => {
+    event.stopPropagation(); // Prevent row click when clicking checkbox
+
     const selectedIndex = selected.indexOf(index);
     let newSelected = [];
 
@@ -337,17 +372,11 @@ export const CustomDataTable = ({
   const handleSearchChange = (e) => {
     setSearchText(e.target.value);
     setPage(1);
-
-    if (e.target.value === "" && Object.keys(columnFilters).length === 0) {
-      setShowFilters(false);
-    }
   };
 
   const clearSearch = () => {
     setSearchText("");
-    if (Object.keys(columnFilters).length === 0) {
-      setShowFilters(false);
-    }
+    setPage(1);
   };
 
   const handleColumnFilterChange = (columnKey, value) => {
@@ -362,13 +391,9 @@ export const CustomDataTable = ({
     setColumnFilters((prev) => {
       const newFilters = { ...prev };
       delete newFilters[columnKey];
-
-      if (Object.keys(newFilters).length === 0 && !searchText) {
-        setShowFilters(false);
-      }
-
       return newFilters;
     });
+    setPage(1);
   };
 
   const clearAllFilters = () => {
@@ -396,19 +421,6 @@ export const CustomDataTable = ({
               onChange={(e) =>
                 handleColumnFilterChange(column.key, e.target.value)
               }
-              endAdornment={
-                value && (
-                  <InputAdornment position="end">
-                    <IconButton
-                      size="small"
-                      onClick={() => clearColumnFilter(column.key)}
-                      edge="end"
-                    >
-                      <Clear fontSize="small" />
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }
             >
               <MenuItem value="">
                 <em>All</em>
@@ -419,6 +431,20 @@ export const CustomDataTable = ({
                 </MenuItem>
               ))}
             </Select>
+            {value && (
+              <IconButton
+                size="small"
+                onClick={() => clearColumnFilter(column.key)}
+                sx={{
+                  position: "absolute",
+                  right: 30,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                }}
+              >
+                <Clear fontSize="small" />
+              </IconButton>
+            )}
           </FormControl>
         );
 
@@ -481,6 +507,7 @@ export const CustomDataTable = ({
   };
 
   const filteredData = data.filter((row) => {
+    // Search filter
     if (searchText) {
       const matches = columns.some((column) => {
         const value = row[column.key];
@@ -493,6 +520,7 @@ export const CustomDataTable = ({
       if (!matches) return false;
     }
 
+    // Column filters
     for (const [columnKey, filterValue] of Object.entries(columnFilters)) {
       if (filterValue) {
         const column = columns.find((col) => col.key === columnKey);
@@ -523,10 +551,20 @@ export const CustomDataTable = ({
     return true;
   });
 
-  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
-  const startIndex = (page - 1) * rowsPerPage;
-  const endIndex = startIndex + rowsPerPage;
-  const paginatedData = pagination
+  const totalPages = serverSide
+    ? Math.ceil(totalCount / rowsPerPage)
+    : Math.ceil(filteredData.length / rowsPerPage);
+
+  const startIndex = serverSide
+    ? (page - 1) * rowsPerPage
+    : (page - 1) * rowsPerPage;
+  const endIndex = serverSide
+    ? Math.min(startIndex + rowsPerPage, totalCount)
+    : startIndex + rowsPerPage;
+
+  const paginatedData = serverSide
+    ? data
+    : pagination
     ? filteredData.slice(startIndex, endIndex)
     : filteredData;
 
@@ -534,6 +572,18 @@ export const CustomDataTable = ({
   const activeFiltersCount =
     Object.keys(columnFilters).filter((key) => columnFilters[key]).length +
     (searchText ? 1 : 0);
+
+  // Get unique values for select filters
+  const getFilterOptions = (column) => {
+    if (column.filterOptions) return column.filterOptions;
+
+    const values = data
+      .map((row) => row[column.key])
+      .filter((value) => value !== undefined && value !== null && value !== "")
+      .map((value) => value.toString());
+
+    return [...new Set(values)].sort();
+  };
 
   if (data.length === 0 && !loading) {
     return (
@@ -548,35 +598,17 @@ export const CustomDataTable = ({
   }
 
   return (
-    <Box position="relative">
+    <Box position="relative" sx={{ width: "100%", height: tableHeight }}>
       <StyledTableContainer component={Paper} {...props}>
         {/* Loading Overlay */}
         <LoadingOverlay open={loading}>
           <CircularProgress color={loadingColor} size={60} />
         </LoadingOverlay>
 
-        {/* Top Linear Loader */}
-        {/* {loading && (
-          <Box position="absolute" top={0} left={0} right={0} zIndex={3}>
-            <CustomLinearLoader color={loadingColor} height={3} />
-          </Box>
-        )} */}
-
         {filters && (
           <FilterContainer>
             <FilterHeader>
-              <Box
-                display="flex"
-                alignItems="center"
-                gap={2}
-                sx={{
-                  [theme.breakpoints.down("md")]: {
-                    width: "100%",
-                    flexDirection: "column",
-                    gap: 1.5,
-                  },
-                }}
-              >
+              <Box display="flex" alignItems="center" gap={2}>
                 <TextField
                   variant="outlined"
                   size="small"
@@ -597,12 +629,6 @@ export const CustomDataTable = ({
                           onClick={clearSearch}
                           edge="end"
                           disabled={loading}
-                          sx={{
-                            border: "1px solid",
-                            borderColor: "grey.400",
-                            borderRadius: "50%",
-                            padding: "4px",
-                          }}
                         >
                           <Clear fontSize="small" />
                         </IconButton>
@@ -610,12 +636,9 @@ export const CustomDataTable = ({
                     ),
                   }}
                   sx={{
-                    minWidth: isMobile ? "100%" : 400,
+                    minWidth: 400,
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: "50px",
-                    },
-                    [theme.breakpoints.down("md")]: {
-                      width: "100%",
+                      borderRadius: "25px",
                     },
                   }}
                 />
@@ -627,28 +650,13 @@ export const CustomDataTable = ({
                     onClick={clearAllFilters}
                     startIcon={<FilterListOff />}
                     disabled={loading}
-                    sx={{
-                      [theme.breakpoints.down("md")]: {
-                        width: "100%",
-                      },
-                    }}
                   >
                     Clear All ({activeFiltersCount})
                   </CustomButton>
                 )}
               </Box>
 
-              <Box
-                display="flex"
-                alignItems="center"
-                gap={1}
-                sx={{
-                  [theme.breakpoints.down("md")]: {
-                    width: "100%",
-                    justifyContent: "space-between",
-                  },
-                }}
-              >
+              <Box display="flex" alignItems="center" gap={1}>
                 {activeFiltersCount > 0 && (
                   <Chip
                     label={`${activeFiltersCount} active`}
@@ -658,8 +666,8 @@ export const CustomDataTable = ({
                   />
                 )}
                 <Tooltip title={showFilters ? "Hide Filters" : "Show Filters"}>
-                  <IconButton 
-                    onClick={toggleFilters} 
+                  <IconButton
+                    onClick={toggleFilters}
                     color="primary"
                     disabled={loading}
                   >
@@ -672,7 +680,11 @@ export const CustomDataTable = ({
 
             <Collapse in={showFilters}>
               <Divider sx={{ mb: 2 }} />
-              <Typography variant="subtitle2" gutterBottom color="text.secondary">
+              <Typography
+                variant="subtitle2"
+                gutterBottom
+                color="text.secondary"
+              >
                 Column Filters
               </Typography>
               <FilterGrid>
@@ -680,7 +692,10 @@ export const CustomDataTable = ({
                   .filter((column) => column.filterable !== false)
                   .map((column) => (
                     <Box key={`filter-${column.key}`}>
-                      {getFilterComponent(column)}
+                      {getFilterComponent({
+                        ...column,
+                        filterOptions: getFilterOptions(column),
+                      })}
                     </Box>
                   ))}
               </FilterGrid>
@@ -699,7 +714,7 @@ export const CustomDataTable = ({
                     {searchText && (
                       <Chip
                         label={`Global: "${searchText}"`}
-                        onDelete={() => setSearchText("")}
+                        onDelete={clearSearch}
                         size="small"
                         variant="outlined"
                         disabled={loading}
@@ -707,7 +722,9 @@ export const CustomDataTable = ({
                     )}
                     {Object.entries(columnFilters).map(([columnKey, value]) => {
                       if (!value) return null;
-                      const column = columns.find((col) => col.key === columnKey);
+                      const column = columns.find(
+                        (col) => col.key === columnKey
+                      );
                       return (
                         <Chip
                           key={columnKey}
@@ -733,294 +750,146 @@ export const CustomDataTable = ({
           </Box>
         )}
 
-        {/* Desktop Table View */}
-        {!isMobile && (
-          <Table
-            stickyHeader
-            sx={{
-              opacity: loading ? 0.6 : 1,
-              transition: "opacity 0.3s ease",
-            }}
-          >
-            <StyledTableHead>
-              <TableRow>
-                {selectable && (
-                  <StyledTableCell padding="checkbox" width="48px">
-                    <Checkbox
-                      indeterminate={
-                        selected.length > 0 &&
-                        selected.length < filteredData.length
-                      }
-                      checked={
-                        filteredData.length > 0 &&
-                        selected.length === filteredData.length
-                      }
-                      onChange={handleSelectAllClick}
-                      disabled={loading}
-                    />
-                  </StyledTableCell>
-                )}
-                {columns.map((column) => (
-                  <StyledTableCell
-                    key={column.key}
-                    align={column.align || "left"}
-                    sx={{
-                      minWidth: column.minWidth,
-                      width: column.width || "auto",
-                    }}
-                  >
-                    {column.label}
-                  </StyledTableCell>
-                ))}
-                {actions && (
-                  <StyledTableCell align="right" width="120px">
-                    Actions
-                  </StyledTableCell>
-                )}
-              </TableRow>
-            </StyledTableHead>
-
-            <StyledTableBody style={{ maxHeight: props.maxHeight || "400px" }}>
-              {paginatedData.map((row, index) => {
-                const actualIndex = (page - 1) * rowsPerPage + index;
-                const isItemSelected = isSelected(actualIndex);
-
-                return (
-                  <StyledTableRow
-                    hover
-                    onClick={
-                      loading || !onRowClick
-                        ? undefined
-                        : (event) => onRowClick(event, row, actualIndex)
-                    }
-                    role={selectable ? "checkbox" : undefined}
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={actualIndex}
-                    selected={isItemSelected}
-                    sx={{ 
-                      cursor: loading ? "default" : onRowClick ? "pointer" : "default",
-                      pointerEvents: loading ? "none" : "auto"
-                    }}
-                  >
-                    {selectable && (
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          onChange={(event) => handleClick(event, actualIndex)}
-                          disabled={loading}
-                        />
-                      </TableCell>
-                    )}
-                    {columns.map((column) => (
-                      <TableCell
-                        key={column.key}
-                        align={column.align || "left"}
-                        sx={{
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          maxWidth: column.width || "200px",
-                        }}
-                      >
-                        {column.render
-                          ? column.render(row[column.key] || "", row, actualIndex)
-                          : row[column.key] || ""}
-                      </TableCell>
-                    ))}
-                    {actions && (
-                      <TableCell align="right">
-                        {typeof actions === "function"
-                          ? actions(row, actualIndex)
-                          : actions}
-                      </TableCell>
-                    )}
-                  </StyledTableRow>
-                );
-              })}
-              {paginatedData.length === 0 && !loading && (
+        {/* Table Container with perfect alignment */}
+        <ScrollableTableContainer>
+          <ScrollSyncWrapper>
+            <Table sx={{ tableLayout: "fixed", width: "100%" }}>
+              <StyledTableHead>
                 <TableRow>
-                  <TableCell
-                    colSpan={
-                      columns.length + (selectable ? 1 : 0) + (actions ? 1 : 0)
-                    }
-                    align="center"
-                  >
-                    <Typography variant="body2" color="text.secondary" py={2}>
-                      No records found
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              )}
-            </StyledTableBody>
-          </Table>
-        )}
-
-        {/* Mobile Cards View */}
-        {isMobile && (
-          <MobileCardContainer
-            sx={{
-              opacity: loading ? 0.6 : 1,
-              transition: "opacity 0.3s ease",
-              pointerEvents: loading ? "none" : "auto",
-            }}
-          >
-            {paginatedData.map((row, index) => {
-              const actualIndex = (page - 1) * rowsPerPage + index;
-              const isItemSelected = isSelected(actualIndex);
-              
-              // Find primary field (first non-ID column or first column)
-              const primaryColumn = columns.find(col => 
-                col.key !== 'id' && col.key !== '_id'
-              ) || columns[0];
-              
-              const primaryValue = primaryColumn ? row[primaryColumn.key] : '';
-
-              return (
-                <MobileCard
-                  key={actualIndex}
-                  onClick={
-                    loading || !onRowClick
-                      ? undefined
-                      : (event) => onRowClick(event, row, actualIndex)
-                  }
-                  sx={{
-                    cursor: loading ? "default" : onRowClick ? "pointer" : "default",
-                    borderLeft: isItemSelected ? `4px solid ${theme.palette.primary.main}` : 'none',
-                    backgroundColor: isItemSelected 
-                      ? theme.palette.mode === "dark" 
-                        ? theme.palette.primary.dark + '20'
-                        : theme.palette.primary.light + '20'
-                      : 'inherit',
-                  }}
-                >
                   {selectable && (
-                    <SelectionIndicator>
+                    <StyledTableCell
+                      padding="checkbox"
+                      sx={{ width: "60px", minWidth: "60px", maxWidth: "60px" }}
+                    >
                       <Checkbox
-                        checked={isItemSelected}
-                        onChange={(event) => {
-                          event.stopPropagation();
-                          handleClick(event, actualIndex);
-                        }}
-                        disabled={loading}
-                        size="small"
-                        sx={{
-                          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                          borderRadius: '50%',
-                          '&.Mui-checked': {
-                            backgroundColor: theme.palette.primary.main,
-                            color: 'white',
-                          },
-                        }}
-                      />
-                    </SelectionIndicator>
-                  )}
-
-                  <CardHeader>
-                    <Box sx={{ flex: 1 }}>
-                      <Typography 
-                        variant="h6" 
-                        sx={{ 
-                          fontWeight: 700,
-                          fontSize: '1.1rem',
-                          color: theme.palette.text.primary,
-                          marginBottom: 0.5,
-                        }}
-                      >
-                        {primaryColumn?.render 
-                          ? primaryColumn.render(primaryValue, row, actualIndex)
-                          : primaryValue || 'Item'}
-                      </Typography>
-                      <Typography 
-                        variant="caption" 
-                        sx={{ 
-                          color: theme.palette.text.secondary,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.5px',
-                        }}
-                      >
-                        {primaryColumn?.label || 'Item'}
-                      </Typography>
-                    </Box>
-                    {actions && (
-                      <Box 
-                        onClick={(e) => e.stopPropagation()}
-                        sx={{ 
-                          display: 'flex', 
-                          alignItems: 'center',
-                          gap: 1,
-                        }}
-                      >
-                        {typeof actions === "function"
-                          ? actions(row, actualIndex)
-                          : actions}
-                      </Box>
-                    )}
-                  </CardHeader>
-
-                  <CardBody>
-                    {columns
-                      .filter(column => column.key !== primaryColumn?.key)
-                      .slice(0, 4) // Show max 4 additional fields
-                      .map((column) => {
-                        const value = row[column.key];
-                        if (value === undefined || value === null || value === '') {
-                          return null;
+                        indeterminate={
+                          selected.length > 0 &&
+                          selected.length < filteredData.length
                         }
+                        checked={
+                          filteredData.length > 0 &&
+                          selected.length === filteredData.length
+                        }
+                        onChange={handleSelectAllClick}
+                        disabled={loading}
+                      />
+                    </StyledTableCell>
+                  )}
+                  {columns.map((column, index) => (
+                    <StyledTableCell
+                      key={column.key}
+                      align={column.align || "left"}
+                      sx={{
+                        width: getColumnWidth(column, index),
+                        minWidth: column.minWidth || "100px",
+                        maxWidth: column.maxWidth || "none",
+                      }}
+                    >
+                      {column.label}
+                    </StyledTableCell>
+                  ))}
+                  {actions && (
+                    <StyledTableCell
+                      align="right"
+                      sx={{
+                        width: "120px",
+                        minWidth: "120px",
+                        maxWidth: "120px",
+                      }}
+                    >
+                      Actions
+                    </StyledTableCell>
+                  )}
+                </TableRow>
+              </StyledTableHead>
 
-                        return (
-                          <CardField key={column.key}>
-                            <CardFieldLabel>{column.label}</CardFieldLabel>
-                            <CardFieldValue>
-                              {column.render
-                                ? column.render(value, row, actualIndex)
-                                : value}
-                            </CardFieldValue>
-                          </CardField>
-                        );
-                      })}
-                      
-                    {columns.length > 5 && (
-                      <CardField>
-                        <CardFieldLabel>More fields</CardFieldLabel>
-                        <CardFieldValue sx={{ 
-                          color: theme.palette.primary.main,
-                          fontWeight: 600,
-                        }}>
-                          +{columns.length - 5} more
-                        </CardFieldValue>
-                      </CardField>
-                    )}
-                  </CardBody>
-                </MobileCard>
-              );
-            })}
-            
-            {paginatedData.length === 0 && !loading && (
-              <Box
-                sx={{
-                  textAlign: 'center',
-                  py: 8,
-                  px: 2,
-                }}
-              >
-                <Typography 
-                  variant="h6" 
-                  color="text.secondary"
-                  sx={{ mb: 1 }}
-                >
-                  No records found
-                </Typography>
-                <Typography 
-                  variant="body2" 
-                  color="text.secondary"
-                >
-                  Try adjusting your search or filter criteria
-                </Typography>
-              </Box>
-            )}
-          </MobileCardContainer>
-        )}
+              <TableBody>
+                {paginatedData.map((row, index) => {
+                  const actualIndex = pagination
+                    ? (page - 1) * rowsPerPage + index
+                    : index;
+                  const isItemSelected = isSelected(actualIndex);
+
+                  return (
+                    <TableRow
+                      hover
+                      onClick={
+                        loading || !onRowClick
+                          ? undefined
+                          : (event) => onRowClick(event, row, actualIndex)
+                      }
+                      role={selectable ? "checkbox" : undefined}
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={actualIndex}
+                      selected={isItemSelected}
+                      sx={{
+                        cursor: loading
+                          ? "default"
+                          : onRowClick
+                          ? "pointer"
+                          : "default",
+                        pointerEvents: loading ? "none" : "auto",
+                      }}
+                    >
+                      {selectable && (
+                        <StyledTableBodyCell
+                          padding="checkbox"
+                          sx={{
+                            width: "60px",
+                            minWidth: "60px",
+                            maxWidth: "60px",
+                          }}
+                        >
+                          <Checkbox
+                            checked={isItemSelected}
+                            onChange={(event) =>
+                              handleClick(event, actualIndex)
+                            }
+                            disabled={loading}
+                          />
+                        </StyledTableBodyCell>
+                      )}
+                      {columns.map((column, colIndex) => (
+                        <StyledTableBodyCell
+                          key={column.key}
+                          align={column.align || "left"}
+                          sx={{
+                            width: getColumnWidth(column, colIndex),
+                            minWidth: column.minWidth || "100px",
+                            maxWidth: column.maxWidth || "none",
+                          }}
+                        >
+                          {column.render
+                            ? column.render(
+                                row[column.key] || "",
+                                row,
+                                actualIndex
+                              )
+                            : row[column.key] || ""}
+                        </StyledTableBodyCell>
+                      ))}
+                      {actions && (
+                        <StyledTableBodyCell
+                          align="right"
+                          sx={{
+                            width: "120px",
+                            minWidth: "120px",
+                            maxWidth: "120px",
+                          }}
+                        >
+                          {typeof actions === "function"
+                            ? actions(row, actualIndex)
+                            : actions}
+                        </StyledTableBodyCell>
+                      )}
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </ScrollSyncWrapper>
+        </ScrollableTableContainer>
 
         {/* Linear Loader above pagination */}
         {loading && pagination && filteredData.length > 0 && (
@@ -1034,40 +903,34 @@ export const CustomDataTable = ({
             <Typography
               variant="body2"
               color="text.secondary"
-              sx={{
-                [theme.breakpoints.down("md")]: {
-                  order: 3,
-                  textAlign: "center",
-                },
-                opacity: loading ? 0.6 : 1,
-              }}
+              sx={{ opacity: loading ? 0.6 : 1 }}
             >
-              Showing {startIndex + 1}-{Math.min(endIndex, filteredData.length)}{" "}
-              of {filteredData.length} entries
+              Showing {startIndex + 1}-
+              {Math.min(
+                endIndex,
+                serverSide ? totalCount : filteredData.length
+              )}{" "}
+              of {serverSide ? totalCount : filteredData.length} entries
             </Typography>
 
-            <Stack
-              spacing={2}
-              alignItems="center"
-              sx={{
-                [theme.breakpoints.down("md")]: {
-                  order: 1,
-                },
-              }}
-            >
+            <Stack spacing={2} alignItems="center">
               <Pagination
                 count={totalPages}
                 page={page}
                 onChange={handleChangePage}
                 color="primary"
                 shape="rounded"
-                size={isMobile ? "small" : "medium"}
                 showFirstButton
                 showLastButton
                 disabled={loading}
                 sx={{
                   "& .MuiPaginationItem-root": {
                     fontWeight: 600,
+                    borderRadius: "50%", // Make it circular
+                    width: 36,
+                    height: 36,
+                    minWidth: 36,
+                    minHeight: 36,
                   },
                   "& .MuiPaginationItem-page.Mui-selected": {
                     backgroundColor: theme.palette.primary.main,
@@ -1082,8 +945,8 @@ export const CustomDataTable = ({
             </Stack>
 
             <RowsPerPageContainer>
-              <Typography 
-                variant="body2" 
+              <Typography
+                variant="body2"
                 color="text.secondary"
                 sx={{ opacity: loading ? 0.6 : 1 }}
               >

@@ -6,10 +6,12 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import WidgetsIcon from "@mui/icons-material/Widgets";
 
 export const navItems = [
-  { text: "Hot-List", path: "/", icon: <HomeIcon /> },
-  { text: "Profiles", path: "/profile", icon: <PersonIcon /> },
-  { text: "Placements", path: "/placements", icon: <WorkIcon /> },
-  { text: "Settings", path: "/settings", icon: <SettingsIcon /> },
-  { text: "UI-lib", path: "/ui-examples", icon: <WidgetsIcon /> },
-  { text: "Sample-Form", path: "/sample-form", icon: <WidgetsIcon /> },
+  { text: "Home", path: "/layout/home", icon: <HomeIcon /> },
+  { text: "Profiles", path: "/layout/profile", icon: <PersonIcon /> },
+  { text: "Placements", path: "/layout/placements", icon: <WorkIcon /> },
+  { text: "Settings", path: "/layout/settings", icon: <SettingsIcon /> },
+  { text: "UI-lib", path: "/layout/ui-examples", icon: <WidgetsIcon /> },
+  { text: "Sample-Form", path: "/layout/sample-form", icon: <WidgetsIcon /> },
+  { text: "Hot-List", path: "/layout/hotlist", icon: <WidgetsIcon /> },
+  { text: "Teamlist", path: "/layout/teamlist", icon: <WidgetsIcon /> },
 ];

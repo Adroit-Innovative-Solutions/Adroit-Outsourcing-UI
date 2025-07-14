@@ -1,4 +1,3 @@
-// components/layout/Layout.jsx
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Box from "@mui/material/Box";
@@ -6,7 +5,7 @@ import { useThemeContext } from "../../contexts/ThemeContext";
 import AppHeader from "./AppHeader";
 import SideDrawer from "./SideDrawer";
 import ProfileMenu from "./ProfileMenu";
-import Footer from "./Footer"; // ✅ import the footer
+import Footer from "./Footer";
 
 const Layout = () => {
   const [drawerOpen, setDrawerOpen] = useState(true);
@@ -36,7 +35,14 @@ const Layout = () => {
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: "background.default",
+      }}
+    >
       <AppHeader
         toggleDrawer={toggleDrawer}
         toggleTheme={toggleTheme}
@@ -53,22 +59,15 @@ const Layout = () => {
         onApplyLeave={handleApplyLeave}
         onToggleTheme={handleChangeTheme}
       />
-      <Box
-        component="main"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          minHeight: "100vh",
-          mt: 8,
-          backgroundColor: "background.default",
-        }}
-      >
-        <Box sx={{ flex: 1, p: 3 }}>
-          <Outlet />
-        </Box>
-        <Footer /> {/* ✅ Footer placed here */}
+
+      {/* Main content with outlet */}
+      <Box component="main" sx={{ flex: 1, mt: 8, p: 1 }}>
+        <Outlet />
       </Box>
-    </>
+
+      {/* Sticky Footer */}
+      <Footer />
+    </Box>
   );
 };
 

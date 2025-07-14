@@ -1,12 +1,14 @@
-import React from 'react'
-import FormGeneratorSample from '../components/FormContainer/FormGeneratorSample'
+import React from "react";
+import { Button } from "@mui/material";
+
+import ToastDemo from "../components/ui/Examples/ToastDemo";
 
 const Placements = () => {
   return (
     <div>
-      <FormGeneratorSample />
+      <ToastDemo />
     </div>
-  )
-}
+  );
+};
 
-export default Placements
+export default Placements;
