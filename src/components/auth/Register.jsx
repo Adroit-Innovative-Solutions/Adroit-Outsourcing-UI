@@ -1,3 +1,4 @@
+// src/components/Register.jsx
 import React from "react";
 import {
   Box,
@@ -8,63 +9,90 @@ import {
   Button,
   Stack,
   useTheme,
+  TextField,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import PhoneInput from "../ui/Input/PhoneInput";
-import TextField from "@mui/material/TextField";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
+import { userAPI } from "../../utils/api";
+import { CustomButton } from "../ui/Button/CustomButton";
 
 const Register = () => {
   const theme = useTheme();
   const [showPassword, setShowPassword] = React.useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
   const [countryCode, setCountryCode] = React.useState("+91");
 
   const formik = useFormik({
     initialValues: {
-      employeeId: "",
-      employeeName: "",
-      employeeMobileNo: "",
-      employeeEmailId: "",
-      employeePassword: "",
-      employeeRole: "EMPLOYEE",
+      userId: "",
+      userName: "",
+      phoneNumber: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      roles: ["RECRUITER"],
     },
     validationSchema: Yup.object({
-      employeeId: Yup.string()
+      userId: Yup.string()
         .matches(/^ADIT\d{5}$/, "ID must start with ADIT and 5 digits")
-        .required("Employee ID is required"),
+        .required("User ID is required"),
 
-      employeeName: Yup.string()
+      userName: Yup.string()
         .max(20, "Max 20 characters")
         .required("Name is required"),
 
-      employeeMobileNo: Yup.string().required("Mobile number is required"),
+      phoneNumber: Yup.string().required("Mobile number is required"),
 
-      employeeEmailId: Yup.string()
+      email: Yup.string()
         .email("Invalid email format")
         .matches(
-          /^[a-zA-Z0-9._%+-]+@aroitinnovative\.com$/,
-          "Use company email (example@aroitinnovative.com)"
+          /^[a-zA-Z0-9._%+-]+@adroitinnovative\.com$/,
+          "Use company email (example@adroitinnovative.com)"
         )
         .required("Email is required"),
 
-      employeePassword: Yup.string()
+      password: Yup.string()
         .matches(
           /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
           "Password must include letters, numbers & special characters"
         )
         .required("Password is required"),
+
+      confirmPassword: Yup.string()
+        .oneOf([Yup.ref("password"), null], "Passwords must match")
+        .required("Confirm password is required"),
     }),
-    onSubmit: (values, { resetForm }) => {
+    onSubmit: async (values, { resetForm }) => {
       const payload = {
-        ...values,
-        countryCode,
+        userId: values.userId,
+        userName: values.userName,
+        password: values.password,
+        email: values.email,
+        phoneNumber: values.phoneNumber,
+        roles: values.roles,
+        confirmPassword: values.confirmPassword,
       };
-      console.log("Submitted payload:", payload);
-      resetForm();
-      setCountryCode("+91");
-      setShowPassword(false);
+
+      try {
+        const response = await userAPI.register(payload);
+        if (response.success) {
+          const { message, data } = response;
+          const successMsg = `${message}. Registered Email: ${data.email}`;
+          showSuccessToast(successMsg);
+          resetForm(); // Formik's resetForm or your custom reset logic
+        }
+
+        setCountryCode("+91");
+        setShowPassword(false);
+        setShowConfirmPassword(false);
+      } catch (error) {
+        showErrorToast(error.message || "Registration failed.");
+        console.error("Registration Error:", error);
+      }
     },
   });
 
@@ -76,6 +104,7 @@ const Register = () => {
     resetForm,
     errors,
     touched,
+    isSubmitting,
   } = formik;
 
   return (
@@ -116,37 +145,37 @@ const Register = () => {
 
         <form onSubmit={handleSubmit} autoComplete="off">
           <TextField
-            label="Employee ID"
-            name="employeeId"
-            value={values.employeeId}
+            label="User ID"
+            name="userId"
+            value={values.userId}
             onChange={handleChange}
             onBlur={handleBlur}
-            error={touched.employeeId && Boolean(errors.employeeId)}
-            helperText={touched.employeeId && errors.employeeId}
+            error={touched.userId && Boolean(errors.userId)}
+            helperText={touched.userId && errors.userId}
             fullWidth
             margin="normal"
           />
 
           <TextField
-            label="Employee Name"
-            name="employeeName"
-            value={values.employeeName}
+            label="User Name"
+            name="userName"
+            value={values.userName}
             onChange={handleChange}
             onBlur={handleBlur}
-            error={touched.employeeName && Boolean(errors.employeeName)}
-            helperText={touched.employeeName && errors.employeeName}
+            error={touched.userName && Boolean(errors.userName)}
+            helperText={touched.userName && errors.userName}
             fullWidth
             margin="normal"
           />
 
           <PhoneInput
             label="Mobile Number"
-            name="employeeMobileNo"
-            value={values.employeeMobileNo}
+            name="phoneNumber"
+            value={values.phoneNumber}
             onChange={handleChange}
             onBlur={handleBlur}
-            error={touched.employeeMobileNo && errors.employeeMobileNo}
-            helperText={touched.employeeMobileNo && errors.employeeMobileNo}
+            error={touched.phoneNumber && errors.phoneNumber}
+            helperText={touched.phoneNumber && errors.phoneNumber}
             countryCode={countryCode}
             setCountryCode={setCountryCode}
             required
@@ -154,12 +183,12 @@ const Register = () => {
 
           <TextField
             label="Email ID"
-            name="employeeEmailId"
-            value={values.employeeEmailId}
+            name="email"
+            value={values.email}
             onChange={handleChange}
             onBlur={handleBlur}
-            error={touched.employeeEmailId && Boolean(errors.employeeEmailId)}
-            helperText={touched.employeeEmailId && errors.employeeEmailId}
+            error={touched.email && Boolean(errors.email)}
+            helperText={touched.email && errors.email}
             fullWidth
             margin="normal"
             type="email"
@@ -167,13 +196,13 @@ const Register = () => {
 
           <TextField
             label="Password"
-            name="employeePassword"
+            name="password"
             type={showPassword ? "text" : "password"}
-            value={values.employeePassword}
+            value={values.password}
             onChange={handleChange}
             onBlur={handleBlur}
-            error={touched.employeePassword && Boolean(errors.employeePassword)}
-            helperText={touched.employeePassword && errors.employeePassword}
+            error={touched.password && Boolean(errors.password)}
+            helperText={touched.password && errors.password}
             fullWidth
             margin="normal"
             InputProps={{
@@ -190,10 +219,32 @@ const Register = () => {
             }}
           />
 
+          <TextField
+            label="Confirm Password"
+            name="confirmPassword"
+            type={showConfirmPassword ? "text" : "password"}
+            value={values.confirmPassword}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={touched.confirmPassword && Boolean(errors.confirmPassword)}
+            helperText={touched.confirmPassword && errors.confirmPassword}
+            fullWidth
+            margin="normal"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    edge="end"
+                  >
+                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+
           <Stack direction="row" spacing={2} mt={3}>
-            <Button type="submit" variant="contained" fullWidth>
-              Register
-            </Button>
             <Button
               type="button"
               variant="outlined"
@@ -202,10 +253,14 @@ const Register = () => {
                 resetForm();
                 setCountryCode("+91");
                 setShowPassword(false);
+                setShowConfirmPassword(false);
               }}
             >
               Reset
             </Button>
+            <CustomButton type="submit" fullWidth loading={isSubmitting}>
+              Register
+            </CustomButton>
           </Stack>
         </form>
       </Paper>

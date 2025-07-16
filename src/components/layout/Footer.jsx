@@ -56,7 +56,7 @@ const Footer = () => {
           </MuiLink>
           <MuiLink
             component={RouterLink}
-            to="/support"
+            to="/layout/support"
             underline="hover"
             color="primary.contrastText"
           >

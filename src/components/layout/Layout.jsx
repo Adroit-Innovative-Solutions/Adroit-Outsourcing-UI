@@ -9,12 +9,15 @@ import Footer from "./Footer";
 
 const Layout = () => {
   const [drawerOpen, setDrawerOpen] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [profileAnchorEl, setProfileAnchorEl] = useState(null);
 
   const profileMenuOpen = Boolean(profileAnchorEl);
   const { isDarkMode, toggleTheme } = useThemeContext();
 
   const toggleDrawer = () => setDrawerOpen(!drawerOpen);
+
+  const toggleCollapse = () => setIsCollapsed((prev) => !prev);
 
   const handleProfileMenuClick = (event) => {
     setProfileAnchorEl(event.currentTarget);
@@ -49,8 +52,18 @@ const Layout = () => {
         isDarkMode={isDarkMode}
         handleProfileMenuClick={handleProfileMenuClick}
         profileMenuOpen={profileMenuOpen}
+        toggleCollapse={toggleCollapse} // pass collapse toggle
+        isCollapsed={isCollapsed}       // pass collapse state
       />
-      <SideDrawer open={drawerOpen} toggleDrawer={toggleDrawer} />
+      
+      {/* Side drawer */}
+      <SideDrawer
+        open={drawerOpen}
+        toggleDrawer={toggleDrawer}
+        isCollapsed={isCollapsed}
+      />
+
+      {/* Profile Menu */}
       <ProfileMenu
         anchorEl={profileAnchorEl}
         open={profileMenuOpen}
@@ -60,12 +73,20 @@ const Layout = () => {
         onToggleTheme={handleChangeTheme}
       />
 
-      {/* Main content with outlet */}
-      <Box component="main" sx={{ flex: 1, mt: 8, p: 1 }}>
+      {/* Main Content */}
+      <Box
+        component="main"
+        sx={{
+          flex: 1,
+          mt: 8,
+          p: 1,
+          ml: isCollapsed ? "70px" : "230px", // content shift based on collapse
+          transition: "margin-left 0.3s",
+        }}
+      >
         <Outlet />
       </Box>
 
-      {/* Sticky Footer */}
       <Footer />
     </Box>
   );

@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, IconButton, Fab } from "@mui/material";
-import { Edit, Delete, Add } from "@mui/icons-material";
+import { Box, IconButton } from "@mui/material";
+import { Edit, Delete } from "@mui/icons-material";
 import CustomTable from "../../components/ui/DataTable/CustomTable";
 import CustomDrawer from "../../components/ui/Display/CustomDrawer";
 import CreateHotListUser from "./CreateHotListUser";
 import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
 import { ConfirmDialog } from "../../components/ui/Feedback/ConfirmDialog";
+import { hotlistAPI } from "../../utils/api";
 
-const HotList = () => {
+const HotList = React.memo(() => {
   const [refreshKey, setRefreshKey] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -17,71 +18,63 @@ const HotList = () => {
   const [confirmRow, setConfirmRow] = useState(null);
   const navigate = useNavigate();
 
-  // Handle creating new candidate
-  const handleCreate = () => {
+  // Memoized handlers to prevent unnecessary re-renders
+  const handleCreate = useCallback(() => {
     setSelectedRow(null);
     setFormMode("create");
     setDrawerOpen(true);
-  };
+  }, []);
 
-  // Handle editing existing candidate
-  const handleEdit = (row) => {
+  const handleEdit = useCallback((row) => {
     setSelectedRow(row);
     setFormMode("edit");
     setDrawerOpen(true);
-  };
+  }, []);
 
-  // Handle delete with better UX
-  const handleDelete = (row) => {
+  const handleDelete = useCallback((row) => {
     setConfirmRow(row);
     setConfirmOpen(true);
-  };
-  const confirmDelete = async () => {
+  }, []);
+
+  const handleNavigate = useCallback((consultantId) => {
+    navigate(`/layout/hotlist/${consultantId}`);
+  }, [navigate]);
+
+  const confirmDelete = useCallback(async () => {
     if (!confirmRow) return;
-
+    
     try {
-      const res = await fetch(
-        `http://192.168.0.115:8090/hotlist/deleteConsultant/${confirmRow.consultantId}`,
-        { method: "DELETE" }
-      );
-
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(
-          errorData.message || `HTTP ${res.status}: ${res.statusText}`
-        );
-      }
-
+      await hotlistAPI.deleteConsultant(confirmRow.consultantId);
       showSuccessToast(`${confirmRow.candidate} deleted successfully`);
       setRefreshKey((prev) => prev + 1);
     } catch (error) {
-      console.error("Delete failed:", error);
       showErrorToast(`Delete failed: ${error.message}`);
     } finally {
       setConfirmOpen(false);
       setConfirmRow(null);
     }
-  };
+  }, [confirmRow]);
 
-  // Handle successful form submission
-  const handleFormSuccess = (data, operation) => {
+  const handleFormSuccess = useCallback(() => {
     setDrawerOpen(false);
     setSelectedRow(null);
     setFormMode("create");
     setRefreshKey((prev) => prev + 1);
+  }, []);
 
-    // Optional: You could update the table data directly instead of refreshing
-    // This would provide better UX for large datasets
-  };
-
-  // Handle form cancellation
-  const handleFormCancel = () => {
+  const handleFormCancel = useCallback(() => {
     setDrawerOpen(false);
     setSelectedRow(null);
     setFormMode("create");
-  };
+  }, []);
 
-  const columns = [
+  const handleConfirmClose = useCallback(() => {
+    setConfirmOpen(false);
+    setConfirmRow(null);
+  }, []);
+
+  // Memoized columns with stable references
+  const columns = useMemo(() => [
     {
       id: "consultantId",
       label: "Consultant ID",
@@ -94,7 +87,7 @@ const HotList = () => {
             cursor: "pointer",
             "&:hover": { textDecoration: "none" },
           }}
-          onClick={() => navigate(`/layout/hotlist/${row.consultantId}`)}
+          onClick={() => handleNavigate(row.consultantId)}
         >
           {value}
         </Box>
@@ -106,7 +99,6 @@ const HotList = () => {
     { id: "experience", label: "Experience", filterType: "number" },
     { id: "addedBy", label: "Recruiter", filterType: "text" },
     { id: "phone", label: "Phone" },
-
     {
       id: "createdDate",
       label: "Created Date",
@@ -134,68 +126,77 @@ const HotList = () => {
         </Box>
       ),
     },
-  ];
+  ], [handleNavigate, handleEdit, handleDelete]);
 
-const fetchData = async ({ page, limit, search = "", filters }) => {
-  const params = new URLSearchParams();
-  params.append("page", page - 1); // backend uses 0-based page index
-  params.append("size", limit);
+  // Optimized fetch data function with request caching
+  const fetchData = useCallback(async ({ page, limit, search = "", filters, signal }) => {
+    // Build parameters object
+    const params = {
+      page: page - 1,
+      size: limit,
+    };
 
-  // Apply filters
-  if (filters?.candidate) params.append("name", filters.candidate);
-  if (filters?.status) params.append("status", filters.status);
-  if (filters?.createdDate) params.append("date", filters.createdDate);
-  if (filters?.consultantId) params.append("consultantId", filters.consultantId);
-  if (filters?.email) params.append("email", filters.email);
-  if (filters?.skills) params.append("skills", filters.skills);
-  if (filters?.location) params.append("location", filters.location);
-  if (filters?.experience) params.append("experience", filters.experience);
-  if (filters?.visa) params.append("visa", filters.visa);
+    // Add filters only if they have values
+    if (filters?.candidate) params.name = filters.candidate;
+    if (filters?.status) params.status = filters.status;
+    if (filters?.createdDate) params.date = filters.createdDate;
+    if (filters?.consultantId) params.consultantId = filters.consultantId;
+    if (filters?.email) params.email = filters.email;
+    if (filters?.skills) params.skills = filters.skills;
+    if (filters?.location) params.location = filters.location;
+    if (filters?.experience) params.experience = filters.experience;
+    if (filters?.visa) params.visa = filters.visa;
 
-  let url = "";
+    try {
+      const trimmedSearch = search.trim();
+      const res = trimmedSearch
+        ? await hotlistAPI.searchConsultants(trimmedSearch, params, { signal })
+        : await hotlistAPI.getAllConsultants(params, { signal });
 
-  // Use search endpoint if search term exists
-  if (search.trim()) {
-    url = `http://192.168.0.115:8090/hotlist/search/${encodeURIComponent(search.trim())}?${params.toString()}`;
-  } else {
-    url = `http://192.168.0.115:8090/hotlist/allConsultants?${params.toString()}`;
-  }
+      const content = res.data?.content || [];
 
-  const res = await fetch(url);
-  const json = await res.json();
+      // Optimize data transformation
+      const formatted = content.map((item) => ({
+        consultantId: item.consultantId || "N/A",
+        candidate: item.name || "N/A",
+        email: item.emailId || "N/A",
+        skills: item.technology || "N/A",
+        location: item.location || "N/A",
+        experience: item.experience || "N/A",
+        addedBy: item.recruiter || "N/A",
+        phone: item.marketingContact || "N/A",
+        status: item.status || "N/A",
+        visa: item.marketingVisa || "N/A",
+        createdDate: item.consultantAddedTimeStamp 
+          ? new Date(item.consultantAddedTimeStamp).toLocaleDateString("en-IN")
+          : "N/A",
+        ...item,
+      }));
 
-  const content = json.data?.content || [];
-
-  const formatted = content.map((item) => ({
-    consultantId: item.consultantId || "N/A",
-    candidate: item.name || "N/A",
-    email: item.emailId || "N/A",
-    skills: item.technology || "N/A",
-    location: item.location || "N/A",
-    experience: item.experience || "N/A",
-    addedBy: item.recruiter || "N/A",
-    phone: item.marketingContact || "N/A",
-    status: item.status || "N/A",
-    visa: item.marketingVisa || "N/A",
-    createdDate: new Date(item.consultantAddedTimeStamp).toLocaleDateString("en-IN"),
-    ...item,
-  }));
-
-  return {
-    data: formatted,
-    total: json.data?.totalElements || content.length,
-  };
-};
-
-
-
-  // Dynamic drawer title
-  const getDrawerTitle = () => {
-    if (formMode === "edit" && selectedRow) {
-      return `Edit ${selectedRow.candidate}`;
+      return {
+        data: formatted,
+        total: res.data?.totalElements || formatted.length,
+      };
+    } catch (error) {
+      // Don't show error for aborted requests
+      if (error.name !== 'AbortError') {
+        showErrorToast(`Failed to load data: ${error.message}`);
+      }
+      return { data: [], total: 0 };
     }
-    return "Add New Candidate";
-  };
+  }, []);
+
+  // Memoized drawer title
+  const drawerTitle = useMemo(() => {
+    return formMode === "edit" && selectedRow
+      ? `Edit ${selectedRow.candidate}`
+      : "Add New Candidate";
+  }, [formMode, selectedRow]);
+
+  // Memoized confirm dialog message
+  const confirmMessage = useMemo(() => {
+    return `Are you sure you want to delete ${confirmRow?.candidate}? This action cannot be undone.`;
+  }, [confirmRow]);
 
   return (
     <Box p={2}>
@@ -204,12 +205,13 @@ const fetchData = async ({ page, limit, search = "", filters }) => {
         fetchData={fetchData}
         title="Hotlist Candidates"
         key={refreshKey}
+        onAdd={handleCreate} // Add this prop if your CustomTable supports it
       />
 
       <CustomDrawer
         open={drawerOpen}
         onClose={handleFormCancel}
-        title={getDrawerTitle()}
+        title={drawerTitle}
         width="lg"
         anchor="bottom"
       >
@@ -220,18 +222,21 @@ const fetchData = async ({ page, limit, search = "", filters }) => {
           onSuccess={handleFormSuccess}
         />
       </CustomDrawer>
+
       <ConfirmDialog
         open={confirmOpen}
-        onClose={() => setConfirmOpen(false)}
+        onClose={handleConfirmClose}
         onConfirm={confirmDelete}
         title="Delete Confirmation"
-        message={`Are you sure you want to delete ${confirmRow?.candidate}? This action cannot be undone.`}
+        message={confirmMessage}
         confirmText="Delete"
         cancelText="Cancel"
         type="error"
       />
     </Box>
   );
-};
+});
+
+HotList.displayName = "HotList";
 
 export default HotList;
