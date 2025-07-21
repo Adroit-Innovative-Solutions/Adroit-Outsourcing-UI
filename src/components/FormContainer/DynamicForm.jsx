@@ -15,44 +15,76 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { CustomButton } from "../ui/Button/CustomButton";
 
-// ICONS
+// ICON IMPORTS
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
-import LockIcon from "@mui/icons-material/Lock";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
+import SchoolIcon from "@mui/icons-material/School";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import PhoneIcon from "@mui/icons-material/Phone";
+import SmartphoneIcon from "@mui/icons-material/Smartphone";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import GroupIcon from "@mui/icons-material/Group";
+import PersonSearchIcon from "@mui/icons-material/PersonSearch";
+import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
+import AdjustIcon from "@mui/icons-material/Adjust";
+import PublicIcon from "@mui/icons-material/Public";
+import TravelExploreIcon from "@mui/icons-material/TravelExplore";
+import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
+import GavelIcon from "@mui/icons-material/Gavel";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
+import CodeIcon from "@mui/icons-material/Code";
+import TimelineIcon from "@mui/icons-material/Timeline";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 import EventIcon from "@mui/icons-material/Event";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import ToggleOnIcon from "@mui/icons-material/ToggleOn";
-import WcIcon from "@mui/icons-material/Wc";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
+import CommentIcon from "@mui/icons-material/Comment";
 
+// ICON MAP
 const iconMap = {
   Person: <PersonIcon />,
   Email: <EmailIcon />,
-  Lock: <LockIcon />,
-  LockOpen: <LockOpenIcon />,
+  School: <SchoolIcon />,
+  LocationOn: <LocationOnIcon />,
+  Phone: <PhoneIcon />,
+  Smartphone: <SmartphoneIcon />,
+  LinkedIn: <LinkedInIcon />,
+  Group: <GroupIcon />,
+  PersonSearch: <PersonSearchIcon />,
+  SupervisorAccount: <SupervisorAccountIcon />,
+  BusinessCenter: <BusinessCenterIcon />,
+  Adjust: <AdjustIcon />,
+  Public: <PublicIcon />,
+  TravelExplore: <TravelExploreIcon />,
+  VerifiedUser: <VerifiedUserIcon />,
+  Gavel: <GavelIcon />,
+  CompareArrows: <CompareArrowsIcon />,
+  Code: <CodeIcon />,
+  Timeline: <TimelineIcon />,
   CalendarToday: <CalendarTodayIcon />,
+  EditCalendar: <EditCalendarIcon />,
   Event: <EventIcon />,
-  AdminPanelSettings: <AdminPanelSettingsIcon />,
-  ToggleOn: <ToggleOnIcon />,
-  Wc: <WcIcon />,
-  AccountCircle: <AccountCircleIcon />,
+  AttachMoney: <AttachMoneyIcon />,
+  RequestQuote: <RequestQuoteIcon />,
+  Comment: <CommentIcon />,
 };
 
-const FormGenerator = ({
+const DynamicForm = ({
   config,
   onSubmit,
   title,
   initialValues = {},
-  onCancel,
+  onCancel, // optional
 }) => {
   const theme = useTheme();
 
   const generatedInitialValues = {};
   const validationSchema = {};
 
-  config.forEach((field) => {
+  const allFields = config.flatMap((section) => section.fields);
+  allFields.forEach((field) => {
     if (initialValues[field.name] !== undefined) {
       generatedInitialValues[field.name] = field.multiple
         ? [...initialValues[field.name]]
@@ -109,9 +141,17 @@ const FormGenerator = ({
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={Boolean(
-              formik.touched[field.name] && formik.errors[field.name]
+              formik.touched[field.name] &&
+                (field.multiple
+                  ? formik.errors[field.name]?.[index]
+                  : formik.errors[field.name])
             )}
-            helperText={formik.touched[field.name] && formik.errors[field.name]}
+            helperText={
+              formik.touched[field.name] &&
+              (field.multiple
+                ? formik.errors[field.name]?.[index]
+                : formik.errors[field.name])
+            }
             InputProps={inputProps}
           />
         );
@@ -128,9 +168,17 @@ const FormGenerator = ({
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={Boolean(
-              formik.touched[field.name] && formik.errors[field.name]
+              formik.touched[field.name] &&
+                (field.multiple
+                  ? formik.errors[field.name]?.[index]
+                  : formik.errors[field.name])
             )}
-            helperText={formik.touched[field.name] && formik.errors[field.name]}
+            helperText={
+              formik.touched[field.name] &&
+              (field.multiple
+                ? formik.errors[field.name]?.[index]
+                : formik.errors[field.name])
+            }
             InputProps={inputProps}
           />
         );
@@ -178,24 +226,6 @@ const FormGenerator = ({
           </TextField>
         );
 
-      case "password":
-        return (
-          <TextField
-            fullWidth
-            name={fieldName}
-            label={field.label}
-            type="password"
-            value={value}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={Boolean(
-              formik.touched[field.name] && formik.errors[field.name]
-            )}
-            helperText={formik.touched[field.name] && formik.errors[field.name]}
-            InputProps={inputProps}
-          />
-        );
-
       default:
         return null;
     }
@@ -206,7 +236,7 @@ const FormGenerator = ({
       elevation={3}
       sx={{
         p: { xs: 2, sm: 4 },
-        maxWidth: 1000,
+        maxWidth: 1200,
         mx: "auto",
         my: 4,
         backgroundColor: theme.palette.background.paper,
@@ -217,77 +247,93 @@ const FormGenerator = ({
           variant="h4"
           sx={{
             mb: 4,
-            fontWeight: 500,
+            fontWeight: 400,
             color: theme.palette.primary.main,
             borderLeft: `6px solid ${theme.palette.primary.main}`,
             pl: 2,
             py: 1,
             backgroundColor: theme.palette.background.default,
             borderRadius: 1,
+            letterSpacing: 0.5,
             fontSize: { xs: "1.5rem", sm: "2rem" },
           }}
         >
           {title}
         </Typography>
 
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 2,
-            alignItems: "flex-start",
-          }}
-        >
-          {config.map((field) => (
-            <Box
-              key={field.name}
+        {config.map((section, sectionIndex) => (
+          <Box key={section.section || sectionIndex} sx={{ mb: 5 }}>
+            <Typography
+              variant="subtitle1"
               sx={{
-                flex: "1 1 300px",
-                minWidth: "250px",
-                display: "flex",
-                flexDirection: "column",
-                gap: 1,
+                mb: 2,
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: 0.5,
+                color: theme.palette.text.secondary,
               }}
             >
-              {field.multiple ? (
-                <>
-                  {formik.values[field.name]?.map((val, idx) => (
-                    <Box
-                      key={`${field.name}-${idx}`}
-                      sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                    >
-                      {renderField(field, val, idx)}
-                      <IconButton
-                        color="error"
-                        onClick={() => handleRemove(field.name, idx)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Box>
-                  ))}
-                  <CustomButton
-                    variant="outlined"
-                    size="small"
-                    startIcon={<AddIcon />}
-                    onClick={() => handleAddMore(field.name)}
-                  >
-                    Add More
-                  </CustomButton>
-                </>
-              ) : (
-                renderField(field, formik.values[field.name])
-              )}
-            </Box>
-          ))}
-        </Box>
+              {section.section}
+            </Typography>
 
-        <Box
-          textAlign="right"
-          display="flex"
-          justifyContent="flex-end"
-          gap={2}
-          mt={4}
-        >
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 2,
+                alignItems: "flex-start",
+              }}
+            >
+              {section.fields.map((field) => (
+                <Box
+                  key={field.name}
+                  sx={{
+                    flex: "1 1 300px",
+                    minWidth: "250px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                  }}
+                >
+                  {field.multiple ? (
+                    <>
+                      {formik.values[field.name]?.map((val, idx) => (
+                        <Box
+                          key={`${field.name}-${idx}`}
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                          }}
+                        >
+                          {renderField(field, val, idx)}
+                          <IconButton
+                            color="error"
+                            onClick={() => handleRemove(field.name, idx)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Box>
+                      ))}
+                      <CustomButton
+                        variant="outlined"
+                        size="small"
+                        startIcon={<AddIcon />}
+                        onClick={() => handleAddMore(field.name)}
+                      >
+                        Add More
+                      </CustomButton>
+                    </>
+                  ) : (
+                    renderField(field, formik.values[field.name])
+                  )}
+                </Box>
+              ))}
+            </Box>
+          </Box>
+        ))}
+
+        <Box textAlign="right" display="flex" justifyContent="flex-end" gap={2}>
           {onCancel && (
             <CustomButton
               variant="outlined"
@@ -297,13 +343,16 @@ const FormGenerator = ({
               Cancel
             </CustomButton>
           )}
+
           <CustomButton
             variant="outlined"
             color="primary"
             onClick={() => formik.resetForm()}
+            disabled={formik.isSubmitting}
           >
             Reset
           </CustomButton>
+
           <CustomButton
             type="submit"
             variant="contained"
@@ -318,4 +367,4 @@ const FormGenerator = ({
   );
 };
 
-export default FormGenerator;
+export default DynamicForm;

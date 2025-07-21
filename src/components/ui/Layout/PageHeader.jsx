@@ -3,9 +3,12 @@ import {
   Box,
   Typography,
   Stack,
-  Divider
+  Divider,
 } from '@mui/material';
 
+/**
+ * PageHeader component to display a title, subtitle, actions, breadcrumbs, and optional content.
+ */
 export const PageHeader = ({
   title,
   subtitle,
@@ -15,37 +18,50 @@ export const PageHeader = ({
   ...props
 }) => {
   return (
-    <Box mb={3} {...props}>
-      {breadcrumb}
-      
+    <Box component="header" mb={2} {...props}>
+      {/* Breadcrumb section */}
+      {breadcrumb && (
+        <Box mb={1}>
+          {breadcrumb}
+        </Box>
+      )}
+
+      {/* Title and actions */}
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
-        alignItems={{ xs: 'flex-start', sm: 'center' }}
         justifyContent="space-between"
+        alignItems={{ xs: 'flex-start', sm: 'center' }}
         spacing={2}
-        mb={2}
       >
+        {/* Title block */}
         <Box>
-          <Typography variant="h4" component="h1" gutterBottom>
+          <Typography variant="h4" component="h1">
             {title}
           </Typography>
           {subtitle && (
-            <Typography variant="body1" color="text.secondary">
+            <Typography variant="body2" color="text.secondary" mt={0.5}>
               {subtitle}
             </Typography>
           )}
         </Box>
-        
+
+        {/* Action buttons */}
         {actions && (
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1} flexWrap="wrap">
             {actions}
           </Stack>
         )}
       </Stack>
 
-      {children}
-      
-      <Divider sx={{ mt: 2 }} />
+      {/* Optional children content */}
+      {children && (
+        <Box mt={2}>
+          {children}
+        </Box>
+      )}
+
+      {/* Divider for separation */}
+      <Divider sx={{ mt: 3 }} />
     </Box>
   );
 };

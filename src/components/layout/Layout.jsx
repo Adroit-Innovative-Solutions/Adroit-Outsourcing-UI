@@ -1,4 +1,3 @@
-// components/layout/Layout.jsx
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Box from "@mui/material/Box";
@@ -6,16 +5,19 @@ import { useThemeContext } from "../../contexts/ThemeContext";
 import AppHeader from "./AppHeader";
 import SideDrawer from "./SideDrawer";
 import ProfileMenu from "./ProfileMenu";
-import Footer from "./Footer"; // ✅ import the footer
+import Footer from "./Footer";
 
 const Layout = () => {
   const [drawerOpen, setDrawerOpen] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [profileAnchorEl, setProfileAnchorEl] = useState(null);
 
   const profileMenuOpen = Boolean(profileAnchorEl);
   const { isDarkMode, toggleTheme } = useThemeContext();
 
   const toggleDrawer = () => setDrawerOpen(!drawerOpen);
+
+  const toggleCollapse = () => setIsCollapsed((prev) => !prev);
 
   const handleProfileMenuClick = (event) => {
     setProfileAnchorEl(event.currentTarget);
@@ -36,15 +38,32 @@ const Layout = () => {
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: "background.default",
+      }}
+    >
       <AppHeader
         toggleDrawer={toggleDrawer}
         toggleTheme={toggleTheme}
         isDarkMode={isDarkMode}
         handleProfileMenuClick={handleProfileMenuClick}
         profileMenuOpen={profileMenuOpen}
+        toggleCollapse={toggleCollapse} // pass collapse toggle
+        isCollapsed={isCollapsed}       // pass collapse state
       />
-      <SideDrawer open={drawerOpen} toggleDrawer={toggleDrawer} />
+      
+      {/* Side drawer */}
+      <SideDrawer
+        open={drawerOpen}
+        toggleDrawer={toggleDrawer}
+        isCollapsed={isCollapsed}
+      />
+
+      {/* Profile Menu */}
       <ProfileMenu
         anchorEl={profileAnchorEl}
         open={profileMenuOpen}
@@ -53,22 +72,23 @@ const Layout = () => {
         onApplyLeave={handleApplyLeave}
         onToggleTheme={handleChangeTheme}
       />
+
+      {/* Main Content */}
       <Box
         component="main"
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          minHeight: "100vh",
+          flex: 1,
           mt: 8,
-          backgroundColor: "background.default",
+          p: 1,
+          ml: isCollapsed ? "70px" : "230px", // content shift based on collapse
+          transition: "margin-left 0.3s",
         }}
       >
-        <Box sx={{ flex: 1, p: 3 }}>
-          <Outlet />
-        </Box>
-        <Footer /> {/* ✅ Footer placed here */}
+        <Outlet />
       </Box>
-    </>
+
+      <Footer />
+    </Box>
   );
 };
 

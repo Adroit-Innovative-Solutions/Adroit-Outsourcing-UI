@@ -20,7 +20,9 @@ import {
 import { useUI } from "../Providers/UIProvider";
 import { Add, Edit, Delete, Person, Email, Search } from "@mui/icons-material";
 import ExampleUsage from "../MultiStepForm/CustomStepperForm";
-import Example from "../../FormContainer/StepperFormGenerator";
+
+import CustomLoadingBar from "../Loading/CustomLoadingBar";
+import WaveLoader from "../Loading/WaveLoader";
 
 export const UIExamples = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -84,7 +86,7 @@ export const UIExamples = () => {
   ];
 
   const breadcrumbItems = [
-    { label: "Components", path: "/components" },
+    { label: "samplform", path: "/sample-form" },
     { label: "UI Examples", path: "/components/examples" },
   ];
 
@@ -318,9 +320,14 @@ export const UIExamples = () => {
       <Section title="Confirmation Dialogs" subtitle="User confirmation">
         <ExampleUsage />
       </Section>
+      
 
-      <Section title="Multi-Step Form" subtitle="Custom Stepper Form">
-        <Example />
+      <Section title="Custome Loadingbar">
+        <CustomLoadingBar />
+      </Section>
+
+      <Section title="Wave Loadingbar">
+        <WaveLoader  />
       </Section>
     </Box>
   );

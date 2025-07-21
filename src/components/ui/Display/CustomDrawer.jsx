@@ -17,7 +17,7 @@ const drawerWidths = {
   md: 450,
   lg: 550,
   xl: 650,
-  sn:100,
+  sn: 100,
 };
 
 const CustomDrawer = ({
@@ -93,7 +93,12 @@ const CustomDrawer = ({
         zIndex: (theme) => theme.zIndex.appBar - 1,
       }}
     >
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
         <Typography variant="h6">{title}</Typography>
         <Tooltip title="Close" arrow>
           <IconButton
@@ -109,7 +114,16 @@ const CustomDrawer = ({
         </Tooltip>
       </Box>
       <Divider />
-      <Box mt={2}>{children}</Box>
+      <Box
+        mt={2}
+        sx={{
+          maxHeight: `calc(100vh - ${topOffset + bottomOffset + 64}px)`,
+          overflowY: "auto",
+          pr: 1,
+        }}
+      >
+        {children}
+      </Box>
     </Drawer>
   );
 };

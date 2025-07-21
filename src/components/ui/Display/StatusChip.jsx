@@ -9,7 +9,15 @@ const statusColors = {
   error: { bg: '#ffebee', color: '#c62828', border: '#f44336' },
   warning: { bg: '#fff8e1', color: '#ef6c00', border: '#ffc107' },
   info: { bg: '#e3f2fd', color: '#1565c0', border: '#2196f3' },
+
+  // HotList-specific statuses
+  available: { bg: '#e8f5e9', color: '#2e7d32', border: '#66bb6a' },
+  submitted: { bg: '#e3f2fd', color: '#1565c0', border: '#42a5f5' },
+  interviewing: { bg: '#fffde7', color: '#f9a825', border: '#fdd835' },
+  hired: { bg: '#ede7f6', color: '#6a1b9a', border: '#ab47bc' },
+  rejected: { bg: '#ffebee', color: '#c62828', border: '#ef5350' },
 };
+
 
 const StyledChip = styled(Chip)(({ status, theme }) => {
   const colors = statusColors[status] || statusColors.info;

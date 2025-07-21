@@ -1,7 +1,13 @@
-// components/layout/AppHeader.jsx
 import React from "react";
-import { AppBar, Toolbar, IconButton, Box } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Box,
+  Tooltip,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
@@ -14,24 +20,30 @@ const AppHeader = ({
   isDarkMode,
   handleProfileMenuClick,
   profileMenuOpen,
+  toggleCollapse,
+  isCollapsed,
 }) => (
   <AppBar
     position="fixed"
     sx={{
       zIndex: (theme) => theme.zIndex.drawer + 1,
-      backgroundColor: (theme) => "#D84315",
+      backgroundColor: "#D84315",
     }}
   >
     <Toolbar sx={{ justifyContent: "space-between" }}>
       <Box sx={{ display: "flex", alignItems: "center" }}>
-        <IconButton
-          color="inherit"
-          edge="start"
-          onClick={toggleDrawer}
-          sx={{ mr: 2 }}
-        >
-          <MenuIcon />
-        </IconButton>
+        {/* Collapse Toggle */}
+        <Tooltip title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}>
+          <IconButton
+            color="inherit"
+            edge="start"
+            onClick={toggleCollapse}
+            sx={{ mr: 2 }}
+          >
+            {isCollapsed ? <MenuIcon /> : <MenuOpenIcon />}
+          </IconButton>
+        </Tooltip>
+
         <Box
           component="img"
           src={logo}
