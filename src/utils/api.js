@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Base URL for API
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
-console.log("API URL:", BASE_URL); 
+console.log("API URL:", BASE_URL);
 
 // Create axios instance
 const api = axios.create({
@@ -74,10 +74,21 @@ export const userAPI = {
   forgotPassword: (email) => apiPost("/users/forgot-password", email),
   resetPassword: (resetData) => apiPost("/users/reset-password", resetData),
   getUser: (userId) => apiGet(`/users/${userId}`),
-  updateUser: (userId, userData) => apiPut(`/users/${userId}`, userData),
-  deleteUser: (userId) => apiDelete(`/users/${userId}`),
-  getAllUsers: (params) => apiGet("/users", params),
+  // updateUser: (userId, userData) => apiPut(`/users/${userId}`, userData),
+  // deleteUser: (userId) => apiDelete(`/users/${userId}`),
+  // getAllUsers: (params) => apiGet("/users", params),
   refreshToken: () => apiPost("/users/refresh-token"),
+};
+
+// ================================
+//  Employees APIs
+// ================================
+export const employeeAPI = {
+  getAll: (params) => apiGet("/users/allUsers", params),
+  getById: (id) => apiGet(`/users/${id}`),
+  create: (data) => apiPost("/users", data),
+  update: (id, data) => apiPut(`/users/${id}`, data),
+  deleteEmployee: (userId) => apiDelete(`/users/delete/${userId}`),
 };
 
 // ================================
@@ -87,9 +98,10 @@ export const hotlistAPI = {
   getAllConsultants: (params) => apiGet("/hotlist/allConsultants", params),
   searchConsultants: (searchTerm, params) =>
     apiGet(`/hotlist/search/${encodeURIComponent(searchTerm)}`, params),
-  getConsultantById: (id) => apiGet(`/hotlist/${id}`),
+  getConsultantById: (consultantId) => apiGet(`/hotlist/consultant/${consultantId}`),
   createConsultant: (data) => apiPost("/hotlist/saveConsultant", data),
-  updateConsultant: (id, data) => apiPut(`/hotlist/updateConsultant/${id}`, data),
+  updateConsultant: (id, data) =>
+    apiPut(`/hotlist/updateConsultant/${id}`, data),
   deleteConsultant: (id) => apiDelete(`/hotlist/deleteConsultant/${id}`),
 };
 

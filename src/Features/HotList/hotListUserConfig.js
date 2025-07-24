@@ -2,8 +2,20 @@ const hotListUserSections = [
   {
     section: "Basic Info",
     fields: [
-      { name: "name", label: "Full Name", type: "text", required: true, icon: "Person" },
-      { name: "emailId", label: "Email", type: "text", required: true, icon: "Email" },
+      {
+        name: "name",
+        label: "Full Name",
+        type: "text",
+        required: true,
+        icon: "Person",
+      },
+      {
+        name: "emailId",
+        label: "Email",
+        type: "text",
+        required: true,
+        icon: "Email",
+      },
       { name: "grade", label: "Grade", type: "text", icon: "School" },
       { name: "location", label: "Location", type: "text", icon: "LocationOn" },
     ],
@@ -11,18 +23,50 @@ const hotListUserSections = [
   {
     section: "Contact Details",
     fields: [
-      { name: "marketingContact", label: "Marketing Contact", type: "text", required: true, icon: "Phone" },
-      { name: "personalContact", label: "Personal Contact", type: "text", required: true, icon: "Smartphone" },
-      { name: "linkedInUrl", label: "LinkedIn URL", type: "link", icon: "LinkedIn" },
+      {
+        name: "marketingContact",
+        label: "Marketing Contact",
+        type: "phone",
+        required: true,
+        icon: "Phone",
+      },
+      {
+        name: "personalContact",
+        label: "Personal Contact",
+        type: "phone",
+        required: true,
+        icon: "Smartphone",
+      },
+      {
+        name: "linkedInUrl",
+        label: "LinkedIn URL",
+        type: "link",
+        icon: "LinkedIn",
+      },
     ],
   },
   {
     section: "Team Info",
     fields: [
-      { name: "reference", label: "Reference", type: "text", icon: "PersonSearch" },
-      { name: "recruiter", label: "Recruiter", type: "text", icon: "SupervisorAccount" },
+      {
+        name: "reference",
+        label: "Reference",
+        type: "text",
+        icon: "PersonSearch",
+      },
+      {
+        name: "recruiter",
+        label: "Recruiter",
+        type: "text",
+        icon: "SupervisorAccount",
+      },
       { name: "teamLead", label: "Team Lead", type: "text", icon: "Group" },
-      { name: "salesExecutive", label: "Sales Executive", type: "text", icon: "BusinessCenter" },
+      {
+        name: "salesExecutive",
+        label: "Sales Executive",
+        type: "text",
+        icon: "BusinessCenter",
+      },
     ],
   },
   {
@@ -109,21 +153,47 @@ const hotListUserSections = [
     section: "Tech & Experience",
     fields: [
       { name: "technology", label: "Technology", type: "text", icon: "Code" },
-      { name: "experience", label: "Experience", type: "text", icon: "Timeline" },
+      {
+        name: "experience",
+        label: "Experience",
+        type: "text",
+        icon: "Timeline",
+      },
     ],
   },
   {
     section: "Dates",
     fields: [
-      { name: "originalDOB", label: "Original DOB", type: "date", icon: "CalendarToday" },
-      { name: "editedDOB", label: "Edited DOB", type: "date", icon: "EditCalendar" },
-      { name: "marketingStartDate", label: "Marketing Start Date", type: "date", icon: "Event" },
+      {
+        name: "originalDOB",
+        label: "Original DOB",
+        type: "date",
+        icon: "CalendarToday",
+      },
+      {
+        name: "editedDOB",
+        label: "Edited DOB",
+        type: "date",
+        icon: "EditCalendar",
+      },
+      {
+        name: "marketingStartDate",
+        label: "Marketing Start Date",
+        type: "date",
+        icon: "Event",
+      },
     ],
   },
   {
     section: "Compensation",
     fields: [
-      { name: "billRate", label: "Bill Rate", type: "text", required: true, icon: "AttachMoney" },
+      {
+        name: "billRate",
+        label: "Bill Rate",
+        type: "text",
+        required: true,
+        icon: "AttachMoney",
+      },
       {
         name: "payroll",
         label: "Payroll",
@@ -132,8 +202,37 @@ const hotListUserSections = [
         options: [
           { label: "W2", value: "W2" },
           { label: "C2C", value: "C2C" },
-          { label: "1099", value: "1099" },
         ],
+      },
+    ],
+  },
+  {
+    section: "Resume Upload",
+    fields: [
+      {
+        name: "resume",
+        label: "Upload Resume",
+        type: "file",
+        required: true,
+        multiple: false,
+        accept: ".pdf,.doc,.docx",
+        maxSize: 10,
+        icon: "UploadFile",
+      },
+    ],
+  },
+  {
+    section: "Supporting Documents",
+    fields: [
+      {
+        name: "documents",
+        label: "Upload Supporting Documents",
+        type: "file",
+        required: false,
+        multiple: true,
+        accept: ".pdf,.jpg,.png,.doc,.docx",
+        maxSize: 10,
+        icon: "AttachFile",
       },
     ],
   },
@@ -143,6 +242,7 @@ const hotListUserSections = [
       { name: "remarks", label: "Remarks", type: "textarea", icon: "Comment" },
     ],
   },
+  
 ];
 
 export default hotListUserSections;

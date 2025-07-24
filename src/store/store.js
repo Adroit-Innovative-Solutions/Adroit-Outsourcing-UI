@@ -1,9 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
+import registerReducer from './slices/registerSlice';
+import employeeReducer from "./slices/employeeSlice";
+import hotlistReducer from "./slices/hotlistSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+     register: registerReducer,
+     employees: employeeReducer,
+     hotlist: hotlistReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

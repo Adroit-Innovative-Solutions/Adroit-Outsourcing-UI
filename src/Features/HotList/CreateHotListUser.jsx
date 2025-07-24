@@ -110,6 +110,8 @@ const CreateHotListUser = ({
       title={getFormTitle()}
       initialValues={processedInitialValues}
       onCancel={onCancel}
+      submitButtonText={"Submit consultant"}
+     
     />
   );
 };

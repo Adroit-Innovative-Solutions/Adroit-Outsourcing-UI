@@ -99,7 +99,9 @@ const CustomDrawer = ({
         alignItems="center"
         mb={2}
       >
-        <Typography variant="h6">{title}</Typography>
+        <Typography variant="h6" sx={{ textAlign: "center", width: "100%" }}>
+  {title}
+</Typography>
         <Tooltip title="Close" arrow>
           <IconButton
             onClick={onClose}

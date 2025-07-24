@@ -1,20 +1,24 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import { Box } from "@mui/material";
+import GroupIcon from "@mui/icons-material/Group";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import HomeIcon from "@mui/icons-material/Home";
-import ListAltIcon from "@mui/icons-material/ListAlt";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
 
 import TabsNavigation from "../../components/ui/Navigation/TabsNavigation";
 
-const HotListContainer = () => {
+const EmployeesContainer = () => {
   const tabs = [
     { label: "Home", icon: <HomeIcon />, path: "/layout/home" },
-    { label: "Hotlist", icon: <ListAltIcon />, path: "/layout/hotlist" },
     {
-      label: "Create hotlist user",
-      icon: <PersonAddIcon />,
-      path: "/layout/hotlist/hostlistuser-form",
+      label: "Employees Table",
+      icon: <GroupIcon />,
+      path: "/layout/employees",
+    },
+    {
+      label: "Onboard Employee",
+      icon: <AddCircleOutlineIcon />,
+      path: "/layout/employees/create",
     },
   ];
 
@@ -23,10 +27,10 @@ const HotListContainer = () => {
       {/* Reusable Tabs */}
       <TabsNavigation tabs={tabs} />
 
-      {/* Nested content */}
+      {/* Nested routes rendered here */}
       <Outlet />
     </Box>
   );
 };
 
-export default HotListContainer;
+export default EmployeesContainer;
