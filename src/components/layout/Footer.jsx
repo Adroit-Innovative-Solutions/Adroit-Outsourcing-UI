@@ -21,7 +21,7 @@ const Footer = () => {
       <Stack
         direction={isSmDown ? "column" : "row"}
         spacing={2}
-        justifyContent="space-between"
+        justifyContent="space-evenly"
         alignItems={isSmDown ? "flex-start" : "center"}
         textAlign={isSmDown ? "left" : "inherit"}
       >
@@ -56,7 +56,7 @@ const Footer = () => {
           </MuiLink>
           <MuiLink
             component={RouterLink}
-            to="/layout/support"
+            to="/"
             underline="hover"
             color="primary.contrastText"
           >

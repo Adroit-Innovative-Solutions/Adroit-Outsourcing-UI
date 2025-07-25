@@ -1,37 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Typography, Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { selectUser } from "../store/slices/authSlice";
+import { useSelector } from "react-redux";
+import { formatReadableDate } from "./dateUtils";
+
 
 const CurrentTime = () => {
   const theme = useTheme();
-  const [time, setTime] = useState("");
-
-
-  //current time
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const options = {
-        weekday: "long", // <-- Add day
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true,
-      };
-      const formattedTime = now.toLocaleString("en-IN", options);
-      setTime(formattedTime);
-    };
-
-    updateTime(); // Initial call
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
+  const user = useSelector(selectUser);
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end", mr: 2 }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-end",
+        mr: 2,
+      }}
+    >
+      {/* User ID and Role */}
       <Typography
         variant="body1"
         sx={{
@@ -41,8 +29,10 @@ const CurrentTime = () => {
           textTransform: "uppercase",
         }}
       >
-        ADIT0001
+        {user.userId} - {user.roleType}
       </Typography>
+
+      {/* Login Timestamp */}
       <Typography
         variant="caption"
         sx={{
@@ -50,7 +40,7 @@ const CurrentTime = () => {
           fontSize: "0.75rem",
         }}
       >
-        {time}
+        Last LogIn - {formatReadableDate(user.loginTimestamp , true)}
       </Typography>
     </Box>
   );

@@ -25,6 +25,9 @@ import { CustomThemeProvider } from "./contexts/ThemeContext";
 import CustomToastContainer from "./components/ui/CustomToastContainer";
 import Login from "./components/auth/Login";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import EmployeesContainer from "./Features/Employees/EmployeesContainer";
+import EmployeesList from "./Features/Employees/EmployeesList";
+import RegisterEmployee from "./Features/Employees/RegisterEmployee";
 
 function App() {
   return (
@@ -32,41 +35,40 @@ function App() {
       <CustomThemeProvider>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <UIProvider>
-           
-              <Routes>
-                {/* Public route */}
-                <Route path="/" element={<Login />} />
+            <Routes>
+              {/* Public route */}
+              <Route path="/" element={<Login />} />
 
-                {/* Protected Routes */}
-                <Route element={<ProtectedRoute />}>
-                  <Route path="/layout" element={<Layout />}>
-                    <Route index element={<Navigate to="home" />} />
-                    <Route path="home" element={<Home />} />
-                    <Route path="profile" element={<Profile />} />
-                    <Route path="settings" element={<Settings />} />
-                    <Route path="teamlist" element={<TeamList />} />
-                    <Route path="placements" element={<Placements />} />
+              {/* Protected Routes */}
+              <Route element={<ProtectedRoute />}>
+                <Route path="/layout" element={<Layout />}>
+                  <Route index element={<Navigate to="home" />} />
+                  <Route path="home" element={<Home />} />
+                  <Route path="profile" element={<Profile />} />
+                  <Route path="settings" element={<Settings />} />
+                  <Route path="teamlist" element={<TeamList />} />
+                  <Route path="placements" element={<Placements />} />
+                  <Route
+                    path="sample-form"
+                    element={<DynamicFormGenerator />}
+                  />
+                  <Route path="support" element={<SupportForm />} />
+                  <Route path="ui-examples" element={<UIExamples />} />
+                  <Route path="hotlist" element={<HotListContainer />}>
+                    <Route index element={<HotList />} />
+                    <Route path="hostlistuser-form" element={<HotListForm />} />
                     <Route
-                      path="sample-form"
-                      element={<DynamicFormGenerator />}
+                      path=":consultantId"
+                      element={<ConsultantProfile />}
                     />
-                    <Route path="support" element={<SupportForm />} />
-                    <Route path="ui-examples" element={<UIExamples />} />
-                    <Route path="hotlist" element={<HotListContainer />}>
-                      <Route index element={<HotList />} />
-                      <Route
-                        path="hostlistuser-form"
-                        element={<HotListForm />}
-                      />
-                      <Route
-                        path=":consultantId"
-                        element={<ConsultantProfile />}
-                      />
-                    </Route>
+                  </Route>
+                  <Route path="employees" element={<EmployeesContainer />}>
+                    <Route index element={<EmployeesList />} />
+                    <Route path="create" element={<RegisterEmployee />} />
                   </Route>
                 </Route>
-              </Routes>
-        
+              </Route>
+            </Routes>
           </UIProvider>
         </LocalizationProvider>
         <CustomToastContainer />

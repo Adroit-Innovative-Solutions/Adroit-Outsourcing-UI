@@ -5,7 +5,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  Divider,
   CircularProgress,
   Alert,
   Tooltip,
@@ -39,6 +38,7 @@ const SideDrawer = ({ open, toggleDrawer, isCollapsed = false }) => {
   const [logoutError, setLogoutError] = useState(null);
 
   const userId = user?.userId;
+  const role = user?.roleType;
 
   const handleLogout = async () => {
     try {
@@ -76,7 +76,7 @@ const SideDrawer = ({ open, toggleDrawer, isCollapsed = false }) => {
         flexShrink: 0,
         "& .MuiDrawer-paper": {
           width: isCollapsed ? collapsedWidth : drawerWidth,
-          height: "100vh", // Ensure full viewport height
+          height: "100vh",
           boxSizing: "border-box",
           backgroundColor: theme.palette.background.paper,
           display: "flex",
@@ -87,7 +87,7 @@ const SideDrawer = ({ open, toggleDrawer, isCollapsed = false }) => {
         },
       }}
     >
-      {/* Scrollable Nav Items Area */}
+      {/* Scrollable Nav Items */}
       <Box
         sx={{
           flex: 1,
@@ -97,55 +97,53 @@ const SideDrawer = ({ open, toggleDrawer, isCollapsed = false }) => {
         }}
       >
         <List>
-          {navItems.map(({ text, path, icon }) => {
-            const selected = location.pathname === path;
-            const itemContent = (
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Box sx={{ mr: isCollapsed ? 0 : 2 }}>{icon}</Box>
-                {!isCollapsed && <ListItemText primary={text} />}
-              </Box>
-            );
-
-            return (
-              <Tooltip
-                key={text}
-                title={isCollapsed ? text : ""}
-                placement="right"
-                arrow
-              >
-                <ListItem
-                  button
-                  component={Link}
-                  to={path}
-                  onClick={toggleDrawer}
-                  sx={{
-                    borderLeft: selected
-                      ? `4px solid ${theme.palette.primary.main}`
-                      : "4px solid transparent",
-                    backgroundColor: selected
-                      ? theme.palette.action.selected
-                      : "inherit",
-                    color: selected ? theme.palette.primary.main : "inherit",
-                    borderRadius: 1,
-                    mx: 1,
-                    mb: 0.5,
-                    "&:hover": {
-                      backgroundColor: theme.palette.action.hover,
-                      color: theme.palette.primary.main,
-                    },
-                    px: isCollapsed ? 2 : 3,
-                    justifyContent: isCollapsed ? "center" : "flex-start",
-                  }}
+          {navItems
+            .filter(({ allowedRoles }) => allowedRoles.includes(role))
+            .map(({ text, path, icon }) => {
+              const selected = location.pathname === path;
+              return (
+                <Tooltip
+                  key={text}
+                  title={isCollapsed ? text : ""}
+                  placement="right"
+                  arrow
                 >
-                  {itemContent}
-                </ListItem>
-              </Tooltip>
-            );
-          })}
+                  <ListItem
+                    button
+                    component={Link}
+                    to={path}
+                    onClick={toggleDrawer}
+                    sx={{
+                      borderLeft: selected
+                        ? `4px solid ${theme.palette.primary.main}`
+                        : "4px solid transparent",
+                      backgroundColor: selected
+                        ? theme.palette.action.selected
+                        : "inherit",
+                      color: selected ? theme.palette.primary.main : "inherit",
+                      borderRadius: 1,
+                      mx: 1,
+                      mb: 0.5,
+                      "&:hover": {
+                        backgroundColor: theme.palette.action.hover,
+                        color: theme.palette.primary.main,
+                      },
+                      px: isCollapsed ? 2 : 3,
+                      justifyContent: isCollapsed ? "center" : "flex-start",
+                    }}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <Box sx={{ mr: isCollapsed ? 0 : 2 }}>{icon}</Box>
+                      {!isCollapsed && <ListItemText primary={text} />}
+                    </Box>
+                  </ListItem>
+                </Tooltip>
+              );
+            })}
         </List>
       </Box>
 
-      {/* Logout at Fixed Bottom */}
+      {/* Logout at Bottom */}
       <Box
         sx={{
           px: isCollapsed ? 1 : 2,
@@ -159,7 +157,7 @@ const SideDrawer = ({ open, toggleDrawer, isCollapsed = false }) => {
           </Alert>
         )}
 
-        <Tooltip title={isCollapsed ? "Logout" : ""} placement="top" arrow>
+        <Tooltip title={isCollapsed ? "Logout" : ""} placement="right" arrow>
           <ListItem
             button
             onClick={handleLogout}

@@ -19,12 +19,18 @@ import PhoneInput from "../ui/Input/PhoneInput";
 import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
 import { userAPI } from "../../utils/api";
 import { CustomButton } from "../ui/Button/CustomButton";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  registerUser,
+  resetRegisterState,
+} from "../../store/slices/registerSlice";
 
 const Register = () => {
   const theme = useTheme();
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
   const [countryCode, setCountryCode] = React.useState("+91");
+  const dispatch = useDispatch();
 
   const formik = useFormik({
     initialValues: {
@@ -78,20 +84,21 @@ const Register = () => {
       };
 
       try {
-        const response = await userAPI.register(payload);
-        if (response.success) {
-          const { message, data } = response;
-          const successMsg = `${message}. Registered Email: ${data.email}`;
-          showSuccessToast(successMsg);
-          resetForm(); // Formik's resetForm or your custom reset logic
-        }
+        const resultAction = await dispatch(registerUser(payload));
 
-        setCountryCode("+91");
-        setShowPassword(false);
-        setShowConfirmPassword(false);
+        if (registerUser.fulfilled.match(resultAction)) {
+          const { message, data } = resultAction.payload;
+          showSuccessToast(`${message}. Registered Email: ${data.email}`);
+          resetForm();
+          setCountryCode("+91");
+          setShowPassword(false);
+          setShowConfirmPassword(false);
+          dispatch(resetRegisterState());
+        } else {
+          showErrorToast(resultAction.payload || "Registration failed.");
+        }
       } catch (error) {
-        showErrorToast(error.message || "Registration failed.");
-        console.error("Registration Error:", error);
+        showErrorToast(error.message || "Unexpected error.");
       }
     },
   });

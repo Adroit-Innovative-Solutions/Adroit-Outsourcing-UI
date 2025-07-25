@@ -21,10 +21,13 @@ import {
   IconButton,
   InputAdornment,
   LinearProgress,
+  CircularProgress,
+  Backdrop,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Close";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { LoadingSpinner } from "../Loading/LoadingSpinner";
 
 const CustomTable = React.memo(
   ({ columns, fetchData, title = "Data Table", refreshKey }) => {
@@ -185,7 +188,7 @@ const CustomTable = React.memo(
           p: 3,
           boxShadow: theme.shadows[4],
           backgroundColor: theme.palette.background.paper,
-          borderRadius: theme.shape.borderRadius * 2,
+          borderRadius: theme.shape.borderRadius,
           border: `1px solid ${theme.palette.divider}`,
         }}
       >
@@ -265,7 +268,7 @@ const CustomTable = React.memo(
 
           <TableContainer
             sx={{
-              maxHeight: "70vh",
+              maxHeight: "80vh",
               overflowY: "auto",
               borderRadius: theme.shape.borderRadius,
               border: `1px solid ${theme.palette.divider}`,
@@ -295,7 +298,7 @@ const CustomTable = React.memo(
                         fontWeight: 700,
                         fontSize: "0.875rem",
                         whiteSpace: "nowrap",
-                        backgroundColor: theme.palette.primary.main,
+                        backgroundColor: theme.palette.primary.light,
                         color: theme.palette.primary.contrastText,
                         borderBottom: `2px solid ${theme.palette.primary.dark}`,
                         py: 2,
@@ -362,17 +365,34 @@ const CustomTable = React.memo(
           </TableContainer>
 
           {/* Bottom Linear Progress */}
+          {/* Bottom Linear Progress */}
           {loading && (
-            <LinearProgress
-              sx={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                zIndex: 1,
-                borderRadius: `0 0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px`,
-              }}
-            />
+            <>
+              <LinearProgress
+                sx={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  zIndex: 1,
+                  borderRadius: `0 0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px`,
+                }}
+              />
+              <Backdrop
+                open={true}
+                sx={{
+                  position: "absolute",
+                  zIndex: theme.zIndex.modal + 1,
+                  color: "#fff",
+                  backgroundColor: "rgba(0, 0, 0, 0.2)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <LoadingSpinner />
+              </Backdrop>
+            </>
           )}
         </Box>
 
